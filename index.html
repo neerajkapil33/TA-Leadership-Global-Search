@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="description" content="TA Leadership Global Search — live jobs, Boolean X-ray, country resumes, profile auto-fill for Talent Acquisition leaders.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>TA Leadership Global Search</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-icon">TA</div>
+    <div>
+      <h1>TA Leadership Global Search + Boolean X-ray</h1>
+      <div class="subtitle">Mid · Senior · CXO · All Countries · Google X-ray · LinkedIn · Naukri · Overseas Portals · Resume Update</div>
+    </div>
+  </div>
+  <div class="meta-badge">Boolean + X-ray deep links · Live results from global job platforms</div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" data-tab="search">🌐 Global Boolean + X-ray Search</button>
+    <button class="tab" data-tab="live">🔴 Live Jobs (Real-Time Fetch)</button>
+    <button class="tab" data-tab="dashboard">📊 Curated Dashboard</button>
+    <button class="tab" data-tab="tailor">📄 Resume Update + Apply</button>
+    <button class="tab" data-tab="resumes">🌍 Country Resumes + Download</button>
+  </div>
+
+  <!-- ========== GLOBAL SEARCH PANEL ========== -->
+  <div id="panel-search" class="panel active">
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span>
+        50+ global portals covered — including real-time meta-search aggregators (Jooble, Careerjet, Adzuna, Indeed, LinkedIn) that continuously re-index listings from thousands of other job sites — plus LinkedIn, Naukri, Reed, Seek, Bayt, RemoteOK, MyVisaJobs, etc.
+        Queries default to <strong>past week</strong>, prefer <strong>Actively Hiring / Easy Apply</strong>, and exclude closed/expired language.
+        Always open the source page and confirm the role is still accepting applications before you apply.
+      </span>
+    </div>
+
+    <div class="search-card">
+      <h2>1. Configure Global Search</h2>
+      <div class="search-grid">
+        <div class="filter-group" style="grid-column: 1 / -1;">
+          <label>Core Boolean / Keywords</label>
+          <input type="text" id="kw" value='("Talent Acquisition" OR "Head of Recruitment" OR "Director Talent Acquisition" OR "VP Talent Acquisition" OR "Chief Talent Officer" OR "Head of TA")' placeholder="Boolean keywords">
+        </div>
+        <div class="filter-group">
+          <label>Level</label>
+          <select id="levelFocus">
+            <option value="all">Mid + Senior + CXO</option>
+            <option value="mid">Mid (Manager / Sr Manager)</option>
+            <option value="senior">Senior (Head / Director / AD)</option>
+            <option value="cxo">CXO / VP / Global Head</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Work Mode</label>
+          <select id="workMode">
+            <option value="any">Any (Hybrid + Remote + Onsite)</option>
+            <option value="hybrid">Hybrid</option>
+            <option value="remote">Remote</option>
+            <option value="onsite">Onsite</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Employment</label>
+          <select id="empType">
+            <option value="fulltime">Full-time Permanent preferred</option>
+            <option value="any">Any</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Visa / Sponsorship (Overseas)</label>
+          <select id="visa">
+            <option value="sponsor">Prefer sponsorship / visa / relocation</option>
+            <option value="any">Any</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Experience</label>
+          <select id="expBand">
+            <option value="12+">12+ years</option>
+            <option value="10+">10+ years</option>
+            <option value="15+">15+ years</option>
+            <option value="any">Any senior</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Freshness (Google / LinkedIn)</label>
+          <select id="freshness">
+            <option value="week" selected>Past week (recommended)</option>
+            <option value="day">Past 24 hours</option>
+            <option value="month">Past month</option>
+            <option value="any">Any time</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>LinkedIn Apply Type</label>
+          <select id="easyApply">
+            <option value="any">Any (Easy Apply + External)</option>
+            <option value="easy">Easy Apply only</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:500">Target Countries / Regions (click to toggle — multi-select)</label>
+        <div class="country-grid" id="countryGrid"></div>
+        <div style="margin-top:0.4rem;display:flex;gap:0.4rem;flex-wrap:wrap">
+          <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.7rem" onclick="selectCountries('all')">Select All</button>
+          <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.7rem" onclick="selectCountries('india')">India only</button>
+          <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.7rem" onclick="selectCountries('apac')">APAC</button>
+          <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.7rem" onclick="selectCountries('emea')">EMEA</button>
+          <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.7rem" onclick="selectCountries('americas')">Americas</button>
+          <button class="btn btn-secondary" style="font-size:0.75rem;padding:0.3rem 0.7rem" onclick="selectCountries('clear')">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-card">
+      <h2>2. Launch Global Capture (Boolean + X-ray + 50+ Portals)</h2>
+      <p class="hint" style="margin-bottom:0.7rem">
+        Google X-ray collates live listings from the portals below. Queries strongly prefer recent / Actively Hiring / Easy Apply and exclude closed language. Always re-check status on the source page.
+      </p>
+
+      <div style="margin-bottom:0.6rem;font-size:0.75rem;color:var(--muted)">Core global</div>
+      <div class="platform-btns">
+        <button class="btn btn-warn" onclick="openGoogleXray()">🔍 Google X-ray (All portals)</button>
+        <button class="btn" onclick="openLinkedInAgent()">🔗 LinkedIn TA · Remote · Easy Apply · Worldwide</button>
+        <button class="btn btn-secondary" onclick="openLinkedIn()">🔗 LinkedIn (filter-aware)</button>
+        <button class="btn btn-secondary" onclick="openIndeed()">Indeed</button>
+        <button class="btn btn-secondary" onclick="openGlassdoor()">Glassdoor</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.monster.com/jobs/search?q=Talent+Acquisition+Director')">Monster</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.ziprecruiter.com/jobs-search?search=Talent+Acquisition+Director')">ZipRecruiter</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.careerbuilder.com/jobs?keywords=Talent+Acquisition+Director')">CareerBuilder</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.simplyhired.com/search?q=Talent+Acquisition+Director')">SimplyHired</button>
+      </div>
+
+      <div style="margin:0.7rem 0 0.35rem;font-size:0.75rem;color:var(--muted)">Real-time aggregators (meta-search — pull live listings from thousands of portals across 60–90+ countries)</div>
+      <div class="platform-btns">
+        <button class="btn btn-warn" onclick="openJooble()">🌍 Jooble (~70 countries)</button>
+        <button class="btn btn-warn" onclick="openCareerjet()">🌍 Careerjet (~90 countries)</button>
+        <button class="btn btn-warn" onclick="openAdzuna()">🌍 Adzuna (salary est. + remote filter)</button>
+        <button class="btn btn-secondary" onclick="openIndeed()">Indeed (aggregator)</button>
+        <button class="btn btn-secondary" onclick="openLinkedIn()">LinkedIn Jobs (aggregator)</button>
+        <button class="btn btn-purple" onclick="openAllAggregators()">🚀 Open All Aggregators</button>
+      </div>
+
+      <div style="margin:0.7rem 0 0.35rem;font-size:0.75rem;color:var(--muted)">India</div>
+      <div class="platform-btns">
+        <button class="btn btn-success" onclick="openNaukri()">🇮🇳 Naukri</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.shine.com/job-search/talent-acquisition-director-jobs')">Shine</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.timesjobs.com/candidate/jobsearch.html?searchType=personalizedSearch&from=submit&txtKeywords=Talent+Acquisition')">TimesJobs</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.foundit.in/srp/results?query=Talent+Acquisition+Director')">Foundit</button>
+        <button class="btn btn-purple" onclick="openIimjobs()">iimjobs</button>
+      </div>
+
+      <div style="margin:0.7rem 0 0.35rem;font-size:0.75rem;color:var(--muted)">UK · Europe · Middle East · Asia-Pacific</div>
+      <div class="platform-btns">
+        <button class="btn btn-secondary" onclick="openReed()">Reed (UK)</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.totaljobs.com/jobs/talent-acquisition-director')">TotalJobs</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.cv-library.co.uk/talent-acquisition-director-jobs')">CV-Library</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.adzuna.co.uk/jobs/search?q=Talent+Acquisition+Director')">Adzuna</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.stepstone.de/jobs/talent-acquisition')">StepStone</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.bayt.com/en/international/jobs/talent-acquisition-director-jobs/')">Bayt (MENA)</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.gulftalent.com/jobs?keyword=Talent+Acquisition')">GulfTalent</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.naukrigulf.com/talent-acquisition-jobs')">NaukriGulf</button>
+        <button class="btn btn-secondary" onclick="openSeek()">Seek (AU/NZ)</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.jobstreet.com/j?q=Talent+Acquisition+Director')">JobStreet</button>
+      </div>
+
+      <div style="margin:0.7rem 0 0.35rem;font-size:0.75rem;color:var(--muted)">USA · Remote · Visa · Contract</div>
+      <div class="platform-btns">
+        <button class="btn btn-secondary" onclick="openPortal('https://www.usajobs.gov/Search/Results?k=Talent%20Acquisition')">USAJobs</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.dice.com/jobs?q=Talent+Acquisition+Director')">Dice</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://wellfound.com/role/l/talent-acquisition')">Wellfound</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://weworkremotely.com/remote-jobs/search?term=Talent+Acquisition')">We Work Remotely</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://remoteok.com/remote-talent-jobs')">RemoteOK</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://remotive.com/remote-jobs/hr')">Remotive</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://himalayas.app/jobs?q=Talent+Acquisition')">Himalayas</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.myvisajobs.com/Search.aspx?S=Talent+Acquisition')">MyVisaJobs</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://relocate.me/search?query=Talent+Acquisition')">Relocate.me</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.upwork.com/nx/search/jobs/?q=talent%20acquisition')">Upwork (Contract)</button>
+      </div>
+
+      <div class="platform-btns" style="margin-top:0.5rem">
+        <button class="btn" onclick="openAllGlobal()">🚀 Open Core Platforms</button>
+        <button class="btn btn-purple" onclick="openRemoteVisa()">🌐 Remote + Visa X-ray</button>
+        <button class="btn btn-secondary" onclick="openContractXray()">📑 Contract / Freelance X-ray</button>
+      </div>
+
+      <div style="margin-top:1.1rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Live Google X-ray query (editable — copy or open). Prefer past week + open status.</label>
+        <div class="xray-box" id="xrayBox" contenteditable="true"></div>
+        <div style="margin-top:0.5rem;display:flex;gap:0.45rem;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="refreshXray()">↻ Rebuild X-ray from filters</button>
+          <button class="btn btn-secondary" onclick="copyXray()">📋 Copy X-ray</button>
+          <button class="btn btn-warn" onclick="openGoogleXray()">Open in Google</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-card">
+      <h2>3. Ready-to-use Boolean / X-ray Templates</h2>
+      <div class="result-box" id="templateBox" style="max-height:180px">
+Loading templates…
+      </div>
+      <div style="margin-top:0.5rem">
+        <button class="btn btn-secondary" onclick="loadTemplate('india')">India FT Permanent</button>
+        <button class="btn btn-secondary" onclick="loadTemplate('overseas')">Overseas + Sponsorship</button>
+        <button class="btn btn-secondary" onclick="loadTemplate('remote')">Global Remote TA Leaders</button>
+        <button class="btn btn-secondary" onclick="loadTemplate('cxo')">CXO / VP only</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== LIVE JOBS (REAL-TIME FETCH) ========== -->
+  <div id="panel-live" class="panel">
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span id="liveStatusText">
+        Collates roles two ways: <strong>live API-fetched</strong> listings (Remotive, Arbeitnow, Jobicy, The Muse — pulled directly, no click needed) and <strong>Boolean / X-ray live search</strong> across every other major portal below (Google indexes their current postings in real time — no login, no scraping, no account creation).
+        Results are filtered to Talent Acquisition roles at Mid / Senior / CXO level. Click <strong>Apply</strong> to go straight to the real posting, or <strong>Tailor & Apply</strong> to prep your resume for it first.
+      </span>
+    </div>
+
+    <div class="search-card">
+      <h2>Live Fetch Settings</h2>
+      <div class="search-grid">
+        <div class="filter-group" style="grid-column: 1 / -1;">
+          <label>Keywords (matched against live job titles)</label>
+          <input type="text" id="liveKw" value="talent acquisition, recruiting, recruiter, head of talent, chief talent officer, talent partner">
+        </div>
+        <div class="filter-group">
+          <label>Level</label>
+          <select id="liveLevel">
+            <option value="all">Mid + Senior + CXO</option>
+            <option value="mid">Mid only</option>
+            <option value="senior">Senior only</option>
+            <option value="cxo">CXO only</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Location contains (optional)</label>
+          <input type="text" id="liveLoc" placeholder="e.g. India, Remote, UK, Dubai">
+        </div>
+        <div class="filter-group">
+          <label>Auto-refresh</label>
+          <select id="liveAutoRefresh" onchange="setupAutoRefresh()">
+            <option value="0">Off</option>
+            <option value="300000">Every 5 min</option>
+            <option value="900000">Every 15 min</option>
+            <option value="1800000">Every 30 min</option>
+          </select>
+        </div>
+        <div class="filter-group" style="align-self:end">
+          <button class="btn" onclick="fetchLiveJobs()" style="width:100%">🔄 Fetch Live Jobs Now</button>
+        </div>
+        <div class="filter-group" style="align-self:end">
+          <button class="btn btn-warn" onclick="openMasterXray()" style="width:100%">🌍 Boolean/X-ray Search — ALL Portals</button>
+        </div>
+      </div>
+      <p class="hint">"Fetch Live Jobs Now" pulls real listings directly into the table below. "Boolean/X-ray — ALL Portals" opens batched Google searches (site:-restricted, current-week filter) across every portal in the directory further down, since most of them don't offer a public API.</p>
+      <div style="margin-top:0.7rem;font-size:0.72rem;color:var(--muted)">
+        Sources: <span id="sourceStatusRemotive">Remotive ⏳</span> · <span id="sourceStatusArbeitnow">Arbeitnow ⏳</span> · <span id="sourceStatusJobicy">Jobicy ⏳</span> · <span id="sourceStatusMuse">The Muse ⏳</span>
+        &nbsp;|&nbsp; Last fetched: <span id="lastFetchedAt">never</span>
+      </div>
+    </div>
+
+    <div class="search-card">
+      <h2>🤖 TA Global Agent Pipeline (Remote / Hybrid · Mid–Senior · 14-day bias)</h2>
+      <p class="hint" style="margin-bottom:0.7rem">
+        Pipeline: <strong>ingest</strong> (ATS boards + job sites) → <strong>normalize</strong> (title, level, type, location, mode, visa, posted, apply URL) →
+        <strong>dedupe</strong> (company+title+location hash) → <strong>freshness</strong> (prefer ≤14 days) → <strong>classify TA</strong> → <strong>rank by recency</strong> with direct apply link.
+        Prefer company/ATS links over job-board redirects when both exist.
+      </p>
+      <div class="platform-btns">
+        <button class="btn btn-warn" onclick="openPortal('https://boards.greenhouse.io/')">Greenhouse boards</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://jobs.lever.co/')">Lever jobs</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.google.com/search?q=%22Talent+Acquisition%22+(Manager+OR+Director+OR+Head+OR+Partner)+(remote+OR+hybrid)+after:2026-08-01&tbs=qdr:w')">Google Jobs X-ray (7d)</button>
+        <button class="btn" onclick="openLinkedInAgent()">🔗 LinkedIn TA · Remote · Easy Apply · Worldwide</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.linkedin.com/jobs/search/?keywords=Talent%20Acquisition%20Manager%20OR%20%22Head%20of%20Talent%22%20OR%20%22TA%20Partner%22&f_WT=2%2C3&f_TPR=r1209600&sortBy=DD')">LinkedIn Remote/Hybrid 14d</button>
+        <button class="btn btn-secondary" onclick="openPortal('https://www.indeed.com/jobs?q=Talent+Acquisition+Manager+OR+Director&sc=0kf%3Aattr(DSQF7)%3B&fromage=14')">Indeed Remote 14d</button>
+        <button class="btn btn-purple" onclick="loadAgentCurated()">📋 Load curated agent snapshot</button>
+      </div>
+      <div class="table-wrap" style="margin-top:0.9rem;max-height:420px">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th><th>Job Title</th><th>Level</th><th>Type</th><th>Location</th>
+              <th>Remote/Hybrid</th><th>Visa</th><th>Posted</th><th>Apply</th>
+            </tr>
+          </thead>
+          <tbody id="agentTableBody">
+            <tr><td colspan="9" class="empty-state" style="padding:1rem">Click “Load curated agent snapshot” for a recent Mid–Senior TA remote/hybrid sample (deduped).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint" id="agentMeta" style="margin-top:0.5rem"></p>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <h2>Live Matching Roles</h2>
+        <div class="table-count"><span id="liveTableCount">0</span> roles found</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Company</th><th>Location</th><th>Level</th><th>Source</th><th>Posted</th><th>Actions</th></tr></thead>
+          <tbody id="liveJobTableBody"></tbody>
+        </table>
+        <div id="liveEmptyState" class="empty-state">Click "Fetch Live Jobs Now" to pull current openings.</div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <h2>📖 Source Directory — All Job Portals (Collated)</h2>
+        <div class="table-count"><span id="directoryCount">0</span> portals</div>
+      </div>
+      <p class="hint" style="margin-bottom:0.7rem">
+        Every portal referenced in this app, in one place. <span class="badge badge-remote">🔴 Live API</span> rows feed straight into the table above automatically.
+        <span class="badge badge-hybrid">🔍 Boolean/X-ray</span> rows open a live, current search on that exact portal — real-time results, just one click away instead of auto-fetched.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Portal</th><th>Region</th><th>Type</th><th>Actions</th></tr></thead>
+          <tbody id="portalDirectoryBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DASHBOARD ========== -->
+  <div id="panel-dashboard" class="panel">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Curated Roles</div><div class="kpi-value" id="kpiTotal">—</div><div class="kpi-sub">Matching filters</div></div>
+      <div class="kpi"><div class="kpi-label">India</div><div class="kpi-value" id="kpiIndia">—</div><div class="kpi-sub">Domestic</div></div>
+      <div class="kpi"><div class="kpi-label">Global</div><div class="kpi-value" id="kpiGlobal">—</div><div class="kpi-sub">APAC · EMEA · Americas</div></div>
+      <div class="kpi"><div class="kpi-label">Avg Exp</div><div class="kpi-value" id="kpiExp">—</div><div class="kpi-sub">Years</div></div>
+      <div class="kpi"><div class="kpi-label">Top Industry</div><div class="kpi-value" id="kpiIndustry" style="font-size:1rem">—</div><div class="kpi-sub">By roles</div></div>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group"><label>Geography</label>
+        <select id="filterGeo">
+          <option value="all">All</option><option value="India">India</option><option value="Global">Global (ex-India)</option>
+          <option value="APAC">APAC</option><option value="EMEA">EMEA</option><option value="Americas">Americas</option>
+        </select>
+      </div>
+      <div class="filter-group"><label>Industry</label><select id="filterIndustry"><option value="all">All Industries</option></select></div>
+      <div class="filter-group"><label>Level</label>
+        <select id="filterLevel">
+          <option value="all">All</option><option value="Mid">Mid</option><option value="Senior">Senior</option><option value="CXO">CXO</option>
+        </select>
+      </div>
+      <div class="filter-group"><label>Work Mode</label>
+        <select id="filterMode">
+          <option value="all">Any</option><option value="Hybrid">Hybrid</option><option value="Remote">Remote</option><option value="Onsite">Onsite</option>
+        </select>
+      </div>
+      <div class="filter-group"><label>Min Exp</label>
+        <input type="range" id="filterMinExp" min="8" max="22" value="12">
+        <div style="font-size:0.7rem;color:var(--muted)">≥ <span id="minExpLabel">12</span> yrs</div>
+      </div>
+      <div class="filter-group"><label>Search</label><input type="text" id="filterSearch" placeholder="Title, company…"></div>
+      <div class="filter-group">
+        <button class="btn" onclick="applyFilters()">Apply</button>
+        <button class="btn btn-secondary" style="margin-top:0.35rem;width:100%" onclick="resetFilters()">Reset</button>
+      </div>
+    </div>
+
+    <div class="charts">
+      <div class="chart-card"><h3>By Industry</h3><div class="chart-wrap"><canvas id="chartIndustry"></canvas></div></div>
+      <div class="chart-card"><h3>By Geography</h3><div class="chart-wrap"><canvas id="chartGeo"></canvas></div></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <h2>Curated Positions (use Global Search for live worldwide results)</h2>
+        <div class="table-count"><span id="tableCount">0</span> roles</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Company</th><th>Location</th><th>Exp</th><th>Mode</th><th>Level</th><th>Geo</th><th>Actions</th></tr></thead>
+          <tbody id="jobTableBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none">No roles match filters.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TAILOR + ATS ========== -->
+  <div id="panel-tailor" class="panel">
+    <div class="tailor-card">
+      <h2>Resume Update + Match Score + DOC/PDF Export</h2>
+      <p class="hint" style="margin-bottom:0.9rem">
+        Paste the job description and your current resume. The tool shows a match score, strengthens relevant language in professional bullets, then lets you download a clean DOCX and PDF in standard resume format.
+        Only apply after verifying the role is still open on the source page.
+      </p>
+      <div class="tailor-grid">
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted)">Job Description (from open role only)</label>
+          <textarea id="jdText" placeholder="Paste full JD from an open / Actively Hiring posting…"></textarea>
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted)">Your Current Resume (plain text)</label>
+          <textarea id="resumeText" placeholder="Paste your resume text, summary and bullets…"></textarea>
+        </div>
+      </div>
+      <div style="margin:0.9rem 0;display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn" onclick="analyzeAndTailor()">✨ Analyze · Match Score · Update Resume</button>
+        <button class="btn btn-success" onclick="copyTailored()">📋 Copy Text</button>
+        <button class="btn btn-warn" onclick="downloadPDF()">📄 Download PDF</button>
+        <button class="btn btn-purple" onclick="downloadDOCX()">📝 Download DOCX</button>
+        <button class="btn btn-secondary" id="applyBtn" style="display:none" onclick="openApplyLink()">🚀 Open Apply Link (verify open)</button>
+      </div>
+
+      <div id="atsScoreBox" style="display:none;margin:0.8rem 0;padding:0.9rem 1.1rem;border-radius:10px;border:1px solid var(--border);background:#0f172a">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.6rem">
+          <div>
+            <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase">Job Match Score (estimated)</div>
+            <div id="atsScoreValue" style="font-size:1.8rem;font-weight:700;margin-top:0.15rem">—</div>
+          </div>
+          <div id="atsScoreBar" style="flex:1;min-width:160px;height:10px;background:#1e293b;border-radius:999px;overflow:hidden">
+            <div id="atsScoreFill" style="height:100%;width:0%;background:linear-gradient(90deg,#f87171,#fbbf24,#34d399);transition:width 0.4s"></div>
+          </div>
+          <div id="atsScoreLabel" style="font-size:0.8rem;color:var(--muted)"></div>
+        </div>
+        <div id="atsTips" style="font-size:0.75rem;color:var(--muted);margin-top:0.55rem"></div>
+      </div>
+
+      <div id="keywordSection" style="display:none">
+        <h3 style="font-size:0.88rem;margin-bottom:0.35rem">Keyword Match</h3>
+        <div class="keyword-chips" id="keywordChips"></div>
+      </div>
+      <div id="tailoredSection" style="display:none;margin-top:0.9rem">
+        <h3 style="font-size:0.88rem;margin-bottom:0.35rem">Updated Resume (ready for DOC/PDF)</h3>
+        <div class="result-box" id="tailoredOutput" style="max-height:380px"></div>
+        <p class="hint">Review the content and adjust numbers or claims as needed so everything remains accurate before you apply.</p>
+      </div>
+    </div>
+    <div class="tailor-card">
+      <h2>Pending Apply from Dashboard</h2>
+      <div id="pendingApply" style="font-size:0.83rem;color:var(--muted)">No job selected. Use “Update & Apply” on any dashboard row. Always confirm the role is still open.</div>
+    </div>
+  </div>
+
+  <!-- ========== COUNTRY-SPECIFIC RESUMES ========== -->
+  <div id="panel-resumes" class="panel">
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span>
+        <strong>My Profile</strong> auto-fill (Neeraj Kapil · linkedin.com/in/neeraj-kapil) · Country resume formats · Upload photo · Cover letter when expected ·
+        JD-matched application email. LinkedIn cannot live-sync (platform blocks it) — save profile once, reuse on every job match.
+      </span>
+    </div>
+
+    <div class="tailor-card" style="border-color:rgba(56,189,248,0.45)">
+      <h2>0. My Profile — auto-fill for every job</h2>
+      <p class="hint" style="margin-bottom:0.65rem">
+        LinkedIn: <a class="link-btn" href="https://www.linkedin.com/in/neeraj-kapil/" target="_blank" rel="noopener">linkedin.com/in/neeraj-kapil</a>
+        · Pre-filled from public profile (Gurugram · 20+ yrs global · TerraPay · TA certifications).
+        Paste full <strong>About + Experience</strong> from LinkedIn once → Save → then <strong>Load My Profile</strong> whenever you apply.
+      </p>
+      <div class="search-grid">
+        <div class="filter-group"><label>Full Name</label><input type="text" id="myName" value="Neeraj Kapil"></div>
+        <div class="filter-group"><label>Headline / Target Title</label><input type="text" id="myTitle" value="Global Talent Acquisition &amp; Workforce Strategy Leader | AI Driven TA Transformation"></div>
+        <div class="filter-group"><label>Location</label><input type="text" id="myLocation" value="Gurugram, Haryana, India"></div>
+        <div class="filter-group"><label>Phone</label><input type="text" id="myPhone" placeholder="+91 …"></div>
+        <div class="filter-group"><label>Email</label><input type="text" id="myEmail" placeholder="you@email.com"></div>
+        <div class="filter-group"><label>LinkedIn</label><input type="text" id="myLinkedIn" value="linkedin.com/in/neeraj-kapil"></div>
+      </div>
+      <div style="margin-top:0.65rem">
+        <label style="font-size:0.72rem;color:var(--muted)">About / Summary (from your LinkedIn)</label>
+        <textarea id="mySummary" style="min-height:110px">Global Talent Acquisition &amp; Workforce Strategy Leader | AI Driven TA Transformation | Building Capability, Culture, and Leadership Pipelines Across 6 Continents
+
+With 20+ years of global experience across Europe, North America, LATAM, Middle East, Africa, and APAC, I build talent ecosystems that accelerate business growth, workforce capability, and organizational culture.
+
+I specialize in global TA transformation, workforce strategy, AI-driven hiring systems, DEI, and employer branding, helping companies scale efficiently while elevating quality, agility, and inclusion.
+
+Measurable impact across 75+ countries:
+• Built competency-based global hiring frameworks improving quality of hire by 40%
+• Automated TA workflows using AI and analytics → 40% cost reduction
+• Enabled 30% faster hiring velocity across 35+ countries
+• Grew global diversity representation by 35%
+• Delivered ₹1.78 Cr (USD 217K) in hiring efficiency gains
+• Scaled global TA to support 600–1,000 hires annually
+
+Focus: leadership pipeline readiness, capability building, succession planning, employer brand, AI talent systems, and global TA transformation.</textarea>
+      </div>
+      <div style="margin-top:0.65rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Experience (from your LinkedIn)</label>
+        <textarea id="myExperience" style="min-height:220px">TerraPay | Global Talent Acquisition Leader | Jan 2023 – Present | On-site
+Hired to build a global, scalable TA engine across 35+ countries (Europe, North America, LATAM, Middle East, APAC); architect AI-enabled hiring systems; lead DEI, succession, and employer brand for hyper-growth.
+• Delivered ~$600,000 annual cost avoidance via AI-powered Global Compensation Intelligence Calculator across 120 global sales hires
+• +40% quality of hire; 30% faster time-to-fill via competency-based global hiring model
+• −40% hiring cost; +50% cycle accuracy through TA workflow automation and analytics
+• +20% retention; +28% engagement; +35% diversity representation
+• 613 hires (FY’23–24); ₹1.78 Cr (USD ~217K) savings
+• Stood up hiring in 35+ markets; Global Skill Library, ATS/HRMS rollout, succession pipelines, real-time TA dashboards
+• Built Global Compensation Intelligence Calculator (180-country database) integrated with Workable ATS and Zoho HRMS
+
+Mavenir | Senior Manager – Global Talent Acquisition Partner (Europe &amp; North America) | Aug 2021 – Dec 2022 | Gurugram
+Led EMEA &amp; North America TA strategy and operations; scaled to 1,000+ hires/year.
+• 96% of priority vacancies filled in first 7 months of FY’21–22
+• −70% third-party staffing cost via vendor rationalization
+• Established workforce planning, succession, and offshore sourcing hubs
+• Global recruiting tech stack uplift; analytics dashboards; vendor governance with SLAs/QBRs
+
+Ericsson India | Global HR Talent Acquisition (Europe and Latin America) | Apr 2019 – Apr 2021 | India
+• Spearheaded TA for Europe and Latin America (Data Scientist, Big Data, Cloud/Software Architect, DevOps, Blockchain, IoT, Full-stack)
+• Global dashboards and insights (Tableau, Power BI, Excel); SAP HR; D&amp;I trend analysis
+• TA strategy, capacity planning, forecasting; internal talent mobility programs
+• BCP solutions; PCMM L4/L5 service delivery projects on ESAT, CSAT &amp; PCI
+
+The Care Foundation – Kids &amp; Elderly | HR – Talent Acquisition &amp; Administration | Oct 2015 – Mar 2019 | Ambala, Haryana
+• Spearheaded end-to-end recruitment (screening, interviewing, onboarding) for volunteers, support staff and caregivers
+• Oversaw administrative operations: attendance, documentation, compliance with policies and local labor laws
+• Facilitated orientation and training aligned to organizational values; coordinated engagement for staff, children and elderly
+• Liaison with internal teams, external partners and donors for HR and administrative support
+• Supported performance evaluation and retention of high-performing volunteers and caregivers; contributed to policy and SOP development
+
+Emerson Network Power | Manager Human Resource (IT, Telecom, R&amp;D, Power &amp; Thermal Projects) | Oct 2014 – Oct 2015 | Mumbai
+• Worked with GU Leadership &amp; India MD on forecasting and headcount growth strategy linked to productivity targets
+• Demand–supply balancing with talent fulfilment lead; recommended internal/external mobility for optimum productivity
+• Managed recruitment vs targets on OTD, cost per joiner, joiner per recruiter, hiring quality and stakeholder feedback
+• Recruitment cost optimization via campus, referral, internet and agency mix; centralized activities to internal ops team
+• Productivity optimization with resource utilization / bench management; attrition and retention strategies
+• Stakeholder management with senior leaders; HR engagement initiatives and policy implementation
+
+Su-Kam Power Systems Limited | Deputy Manager Human Resources (Telecom, Power and Energy) | Jan 2012 – Sep 2014 | Gurgaon
+• Tracked recruitment (global hire, internal/external mobility), attrition and retention for PAN India Corporate, R&amp;D, Production, Sales and Service — middle to top management (AGM, GM, AVP, VP+)
+• Planned training budgets and organizational L&amp;D strategy; delivered and measured training
+• Site visits with business leaders on productivity and morale; team-building and core values facilitation
+• 3 C’s for new hires — Connect, Concern, Confirmation
+• Reduced external agency dependency from 45% (2012) to 27% (2013) → annual savings INR 10.7 million
+
+Billing Savi | Assistant Manager – Human Resource &amp; Process Training (IT, US Healthcare &amp; Insurance) | Dec 2009 – Aug 2011 | Gurgaon
+• Integrated talent management: workforce planning, TA, onboarding, performance, L&amp;D and retention aligned to strategy
+• Implemented succession planning and talent review; monitored key talent development plans
+• Improved TA branding, competency-based JDs, structured interviews, assessment tools and assimilation
+• Sourced via social/professional networks; partnered hiring managers on role definition and panel process
+• Facilitated process training; standardized quality manuals, skill metrics and OD processes; CMMI / HIPAA-related projects
+• Tracked and reported talent metrics for accountability
+
+GeBBS Healthcare Solutions | Senior Team Leader Training (IT, US Healthcare &amp; Insurance) | Oct 2007 – Dec 2009 | Mumbai
+• Organization structure, training, development and workforce planning for succession readiness
+• Process &amp; technical training; training manuals; JDs; career graphs; succession planning; competency matrix
+• Defined process SOPs, SLAs, QMS; needs assessment and competency models linked to performance strategy
+• Managed trainers; goal setting, coaching, feedback and appraisal; measured pre/post training performance
+
+GenNex Manpower | Senior Executive HR | Oct 2004 – Oct 2007 | Delhi
+• Recruitment and selection for IT clients</textarea>
+      </div>
+      <div style="margin-top:0.65rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Skills</label>
+        <textarea id="mySkills" style="min-height:55px">Global Talent Acquisition, Talent Analytics, HR Strategy, HR Transformation, Employer Branding, Workforce Strategy, AI-Driven Hiring, DEI, Leadership Pipelines, Succession Planning, Full-Cycle Recruitment, Boolean Search, LinkedIn Recruiter, ATS, Stakeholder Management, Vendor Management, Quality of Hire, Time-to-Fill, Competency Frameworks, People Strategy, Performance-Based Hiring</textarea>
+      </div>
+      <div style="margin-top:0.65rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Education / Certifications</label>
+        <textarea id="myEducation" style="min-height:55px">Learning LinkedIn Recruiter — LinkedIn (2019)
+Business Intelligence for Consultants — LinkedIn (2019)
+Human Resources Fundamentals — LinkedIn (2016)
+Performance-Based Hiring — LinkedIn (2016)
+Lean Six Sigma Business Excellence — Intertek
+Leading at Emerson — Emerson (2015)</textarea>
+      </div>
+      <div style="margin:0.8rem 0;display:flex;gap:0.45rem;flex-wrap:wrap">
+        <button class="btn btn-success" onclick="saveMyProfile()">💾 Save My Profile</button>
+        <button class="btn btn-warn" onclick="restoreFullCareerHistory()">↺ Restore full career (TerraPay→GenNex)</button>
+        <button class="btn" onclick="loadMyProfileIntoForm()">📥 Load into Country Resume form</button>
+        <button class="btn btn-secondary" onclick="loadMyProfileIntoTailor()">📥 Load into Tailor tab</button>
+        <button class="btn btn-purple" onclick="pasteLinkedInHint()">📋 How to copy from LinkedIn</button>
+      </div>
+      <p class="hint" id="myProfileStatus">Review fields → Save My Profile. Then one click loads everything for each job.</p>
+    </div>
+
+    <div class="tailor-card">
+      <h2>1. Upload Photo &amp; Resume (optional — auto-fills fields)</h2>
+      <div class="search-grid">
+        <div class="filter-group">
+          <label>Upload Photo (JPG/PNG)</label>
+          <input type="file" id="photoUpload" accept="image/*" onchange="handlePhotoUpload(event)" style="padding:0.35rem;font-size:0.78rem">
+          <div id="photoPreviewWrap" style="margin-top:0.4rem;display:none">
+            <img id="photoPreview" alt="Photo" style="width:72px;height:90px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+            <button class="btn btn-secondary" style="font-size:0.7rem;padding:0.2rem 0.5rem;margin-left:0.4rem" onclick="clearPhoto()">Remove</button>
+          </div>
+        </div>
+        <div class="filter-group" style="grid-column: span 2">
+          <label>Upload Resume (.txt) or paste below — extract fields</label>
+          <input type="file" id="resumeFileUpload" accept=".txt,text/plain" onchange="handleResumeFileUpload(event)" style="padding:0.35rem;font-size:0.78rem">
+          <textarea id="rawResumeImport" style="min-height:90px;margin-top:0.4rem" placeholder="Paste full resume text here, then click Extract…"></textarea>
+          <button class="btn btn-secondary" style="margin-top:0.4rem;font-size:0.78rem" onclick="extractFromResumeText()">🔍 Extract name, contact, summary, experience, skills, education</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tailor-card">
+      <h2>2. Country Format · Language · Style</h2>
+      <div class="search-grid">
+        <div class="filter-group">
+          <label>Target Country / Format</label>
+          <select id="resumeCountry" onchange="updateResumeHints()">
+            <option value="india">🇮🇳 India — Modern ATS (no photo)</option>
+            <option value="usa">🇺🇸 USA — Concise Resume (no photo)</option>
+            <option value="uk">🇬🇧 UK — CV + Personal Statement</option>
+            <option value="germany">🇩🇪 Germany — Lebenslauf (photo common, formal)</option>
+            <option value="france">🇫🇷 France — CV (photo optional, formal)</option>
+            <option value="netherlands">🇳🇱 Netherlands — Professional CV</option>
+            <option value="singapore">🇸🇬 Singapore / APAC</option>
+            <option value="australia">🇦🇺 Australia — CV (no photo)</option>
+            <option value="uae">🇦🇪 UAE / Gulf (photo common)</option>
+            <option value="canada">🇨🇦 Canada — Resume (no photo)</option>
+            <option value="japan">🇯🇵 Japan — English professional (photo optional)</option>
+            <option value="global">🌍 Global / Remote — neutral ATS</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Document Language (headings + email)</label>
+          <select id="resumeLang">
+            <option value="en">English</option>
+            <option value="en-uk">English (UK spelling)</option>
+            <option value="en-in">English (India style)</option>
+            <option value="de">Deutsch (German headings)</option>
+            <option value="fr">Français (French headings)</option>
+            <option value="nl">Nederlands (Dutch headings)</option>
+            <option value="ar">Arabic etiquette (English body + formal close)</option>
+            <option value="hi">Hindi etiquette (English body + India style)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Layout / Format (6 professional styles)</label>
+          <select id="resumeStyle">
+            <option value="executive">1. Executive — bold name, senior leadership</option>
+            <option value="modern">2. Modern — clean accent headers, ATS-safe</option>
+            <option value="classic">3. Classic — traditional serif, formal</option>
+            <option value="two-column">4. Two-Column — sidebar skills + main timeline</option>
+            <option value="minimal">5. Minimal — refined whitespace</option>
+            <option value="compact">6. Compact — dense senior CV</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Photo on resume</label>
+          <select id="resumePhoto">
+            <option value="auto">Auto (by country)</option>
+            <option value="yes">Force Yes</option>
+            <option value="no">Force No</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Cover letter</label>
+          <select id="resumeCover">
+            <option value="auto">Auto (if country expects it)</option>
+            <option value="yes">Always generate</option>
+            <option value="no">Never</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint" id="resumeFormatHint" style="margin-top:0.7rem"></p>
+      <p class="hint" id="coverLetterHint" style="margin-top:0.25rem"></p>
+    </div>
+
+    <div class="tailor-card">
+      <h2>3. Your Details (edit after extract)</h2>
+      <div class="search-grid">
+        <div class="filter-group"><label>Full Name</label><input type="text" id="rName" placeholder="e.g. Priya Sharma"></div>
+        <div class="filter-group"><label>Target Title</label><input type="text" id="rTitle" value="Head of Talent Acquisition / Director Talent Acquisition"></div>
+        <div class="filter-group"><label>Location</label><input type="text" id="rLocation" placeholder="City, Country"></div>
+        <div class="filter-group"><label>Phone</label><input type="text" id="rPhone" placeholder="+91 …"></div>
+        <div class="filter-group"><label>Email</label><input type="text" id="rEmail" placeholder="you@email.com"></div>
+        <div class="filter-group"><label>LinkedIn</label><input type="text" id="rLinkedIn" placeholder="linkedin.com/in/…"></div>
+        <div class="filter-group"><label>Nationality / Work auth (DE/Gulf optional)</label><input type="text" id="rNationality" placeholder="e.g. Indian · Open to relocation"></div>
+        <div class="filter-group"><label>Date of birth (DE optional only)</label><input type="text" id="rDob" placeholder="DD.MM.YYYY or leave blank"></div>
+      </div>
+      <div style="margin-top:0.85rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Summary / Personal Statement</label>
+        <textarea id="rSummary" style="min-height:80px"></textarea>
+      </div>
+      <div style="margin-top:0.85rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Work Experience</label>
+        <textarea id="rExperience" style="min-height:140px"></textarea>
+      </div>
+      <div style="margin-top:0.85rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Skills</label>
+        <textarea id="rSkills" style="min-height:60px"></textarea>
+      </div>
+      <div style="margin-top:0.85rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Education</label>
+        <textarea id="rEducation" style="min-height:50px"></textarea>
+      </div>
+      <div style="margin-top:0.85rem">
+        <label style="font-size:0.72rem;color:var(--muted)">Job description / role context (for cover letter + application email)</label>
+        <textarea id="rJdContext" style="min-height:80px" placeholder="Paste JD or role title + company for tailored cover letter and email…"></textarea>
+      </div>
+      <div style="margin:1rem 0;display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn" onclick="generateCountryResume()">✨ Generate Resume (+ Cover if needed)</button>
+        <button class="btn btn-warn" onclick="generateApplicationEmail()">✉️ Generate Application Email</button>
+        <button class="btn btn-success" onclick="saveResumeVersion()">💾 Save Version</button>
+        <button class="btn btn-purple" onclick="downloadCountryPDF()">📄 PDF</button>
+        <button class="btn" style="background:linear-gradient(135deg,#818cf8,#6366f1)" onclick="downloadCountryDOCX()">📝 DOCX</button>
+        <button class="btn btn-secondary" onclick="downloadCountryHTML()">🌐 HTML</button>
+        <button class="btn btn-secondary" onclick="copyCountryResume()">📋 Copy Resume</button>
+      </div>
+    </div>
+
+    <div class="tailor-card">
+      <h2>4. Resume Preview</h2>
+      <div id="resumePreview" class="result-box" style="max-height:420px;background:#fff;color:#0f172a;line-height:1.45;padding:1.4rem 1.6rem">
+        Generate a resume to preview country format here.
+      </div>
+    </div>
+
+    <div class="tailor-card" id="coverLetterCard" style="display:none">
+      <h2>5. Cover Letter <span id="coverRequiredBadge" class="badge badge-senior" style="margin-left:0.4rem">Recommended</span></h2>
+      <div id="coverLetterPreview" class="result-box" style="max-height:280px;background:#fff;color:#0f172a;padding:1.2rem;white-space:pre-wrap;font-size:0.85rem"></div>
+      <div style="margin-top:0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="copyCoverLetter()">📋 Copy Cover Letter</button>
+        <button class="btn btn-warn" onclick="downloadCoverPDF()">📄 Cover Letter PDF</button>
+      </div>
+    </div>
+
+    <div class="tailor-card" id="emailCard" style="display:none">
+      <h2>6. Application Email (country etiquette + role)</h2>
+      <div class="filter-group" style="margin-bottom:0.5rem">
+        <label>Subject</label>
+        <input type="text" id="emailSubject" readonly style="background:#0f172a">
+      </div>
+      <div id="emailBodyPreview" class="result-box" style="max-height:260px;white-space:pre-wrap;font-size:0.82rem"></div>
+      <div style="margin-top:0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="copyApplicationEmail()">📋 Copy Email</button>
+      </div>
+    </div>
+
+    <div class="tailor-card">
+      <h2>7. Saved Versions</h2>
+      <p class="hint" style="margin-bottom:0.7rem">Stored in this browser. Select to preview and download again.</p>
+      <div id="savedResumesList" style="display:flex;flex-direction:column;gap:0.45rem">
+        <div class="empty-state" style="padding:1.2rem">No saved versions yet.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Global TA leadership search · Live API fetch (Remotive, Arbeitnow, Jobicy, The Muse) · Boolean + Google X-ray across 40+ portals · LinkedIn · Naukri · Indeed · Seek · Reed · Glassdoor · Jooble · Careerjet · Adzuna.<br>
+  Resume Update: match score + keyword alignment · Country Resumes: India / USA / UK / Germany / Singapore / UAE formats & styles · Save versions in-app · Download PDF, DOCX, HTML.<br>
+  Always verify a role is still open before applying. India: full-time permanent · Hybrid/Onsite/Remote · Overseas: sponsorship preference · Mid / Senior / CXO.
+</footer>
+<script src="js/app.js" defer></script>
+</body>
+</html>
