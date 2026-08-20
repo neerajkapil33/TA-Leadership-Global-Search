@@ -151,7 +151,10 @@
   .country-chip:hover, .country-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(56,189,248,0.1); }
 
   /* ========== TWO-PAGE LAYOUT ========== */
-  .page-view { max-width: 1100px; margin: 0 auto; padding: 0 1rem 2rem; }
+  .page-view { margin: 0 auto; padding: 0 0.5rem 2rem; }
+  #page1.page-view { max-width: 1100px; padding: 0 1rem 2rem; }
+  #page2.page-view { max-width: 100%; width: 100%; padding: 0 0.75rem 2rem; }
+  #page2 .container { max-width: 1700px; width: 100%; margin: 0 auto; }
   .page1-hero { text-align: center; margin: 2rem 0 1.75rem; }
   .page1-hero h2 { font-size: 1.6rem; font-weight: 600; margin: 0 0 0.4rem; color: #e2e8f0; }
   .page1-hero p { color: #94a3b8; font-size: 0.95rem; margin: 0; }
@@ -197,8 +200,9 @@
   .page2-bar {
     display: flex; align-items: center; justify-content: space-between;
     gap: 1rem; flex-wrap: wrap;
-    max-width: 1100px; margin: 0.75rem auto 0.5rem; padding: 0 1rem;
+    max-width: 1700px; margin: 0.75rem auto 0.5rem; padding: 0 0.75rem;
   }
+  #page2 .table-wrap { max-height: min(70vh, 640px); }
   .back-btn {
     background: #1e293b; border: 1px solid #334155; color: #e2e8f0;
     padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;
@@ -645,7 +649,7 @@ Loading templates…
 
     <div class="table-card">
       <div class="table-header">
-        <h2>Curated Positions — all industries · domestic + global (filters optional)</h2>
+        <h2>Curated Positions — direct TA job links · domestic + global (filters optional)</h2>
         <div class="table-count"><span id="tableCount">0</span> roles</div>
       </div>
       <div class="table-wrap">
@@ -1171,7 +1175,23 @@ const jobs = [
   { id:22, title:"Head of Talent Acquisition", company:"DenizBank", location:"Istanbul, Türkiye", expMin:10, expMax:15, industry:"BFSI", level:"Senior", geo:"EMEA", mode:"Onsite", source:"LinkedIn", url:"https://tr.linkedin.com/jobs/view/head-of-talent-acquisition-at-denizbank-4341998991" },
   { id:23, title:"Global Talent Acquisition Head", company:"Rashmi Group", location:"Kolkata, India", expMin:12, expMax:14, industry:"Manufacturing", level:"CXO", geo:"India", mode:"Onsite", source:"iimjobs", url:"https://www.iimjobs.com/j/rashmi-group-global-talent-acquisition-head-1674025" },
   { id:24, title:"Senior Talent Acquisition Manager", company:"Axxess", location:"Dallas, TX, USA", expMin:7, expMax:12, industry:"Healthcare", level:"Mid", geo:"Americas", mode:"Hybrid", source:"LinkedIn", url:"https://www.linkedin.com/jobs/view/senior-talent-acquisition-manager-at-axxess-4343117333" },
-  { id:25, title:"Senior Manager Talent Acquisition", company:"Druva Inc.", location:"Pune, India", expMin:15, expMax:20, industry:"Technology / Cloud", level:"Senior", geo:"India", mode:"Hybrid", source:"AmbitionBox", url:"https://www.ambitionbox.com/jobs/senior-talent-acquisition-manager-jobs-prf" }
+  { id:25, title:"Senior Manager Talent Acquisition", company:"Druva Inc.", location:"Pune, India", expMin:15, expMax:20, industry:"Technology / Cloud", level:"Senior", geo:"India", mode:"Hybrid", source:"AmbitionBox", url:"https://www.ambitionbox.com/jobs/senior-talent-acquisition-manager-jobs-prf" },
+  { id:26, title:"Head of Global Talent Acquisition", company:"Techstars", location:"United States", expMin:12, expMax:20, industry:"Technology / Startups", level:"CXO", geo:"Americas", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/head-of-global-talent-acquisition-techstars-2-1851410" },
+  { id:27, title:"Senior Director, Talent Acquisition", company:"Marqeta", location:"United States (Remote)", expMin:12, expMax:20, industry:"FinTech", level:"Senior", geo:"Americas", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/senior-director-talent-acquisition-marqeta-7902067" },
+  { id:28, title:"Director, Global Talent Acquisition", company:"GiveDirectly", location:"Remote (EAT overlap)", expMin:10, expMax:18, industry:"Non-profit", level:"Senior", geo:"Global", mode:"Remote", source:"Greenhouse", url:"http://job-boards.greenhouse.io/givedirectly/jobs/4714132005" },
+  { id:29, title:"Senior Manager, Talent Acquisition", company:"Cint", location:"Global / flexible", expMin:10, expMax:16, industry:"Technology / Data", level:"Senior", geo:"Global", mode:"Hybrid", source:"Startup.jobs", url:"https://startup.jobs/senior-manager-talent-acquisition-cint-7705365" },
+  { id:30, title:"Lead Talent Acquisition Partner", company:"Circle", location:"Remote", expMin:8, expMax:15, industry:"FinTech / Crypto", level:"Senior", geo:"Americas", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/lead-talent-acquisition-partner-circle-2-5495629" },
+  { id:31, title:"Senior Talent Acquisition Partner (Technology)", company:"Twinkl", location:"Sheffield, UK", expMin:8, expMax:14, industry:"EdTech", level:"Senior", geo:"EMEA", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/senior-talent-acquisition-partner-technology-twinkl-4606922" },
+  { id:32, title:"Lead Talent Acquisition Business Partner", company:"Stryker", location:"United States", expMin:10, expMax:16, industry:"Healthcare / Medical Devices", level:"Senior", geo:"Americas", mode:"Remote", source:"Company site", url:"https://careers.stryker.com/lead-talent-acquisition-business-partner-remote/job/D528E48BE78E28A8022D374AB83E30F0" },
+  { id:33, title:"Senior Talent Acquisition Partner", company:"Hostaway", location:"LATAM (Remote)", expMin:7, expMax:12, industry:"Technology / Hospitality", level:"Senior", geo:"Americas", mode:"Remote", source:"LinkedIn", url:"https://www.linkedin.com/jobs/view/senior-talent-acquisition-partner-100%25-remote-latam-at-hostaway-4391593198" },
+  { id:34, title:"Lead Technical Talent Acquisition Manager", company:"Greenhouse", location:"United States (Remote)", expMin:10, expMax:16, industry:"HR Tech", level:"Senior", geo:"Americas", mode:"Remote", source:"ZipRecruiter", url:"https://www.ziprecruiter.com/c/Greenhouse/Job/Lead-Technical-Talent-Acquisition-Manager/-in-Remote,US?jid=71df3f050de08550" },
+  { id:35, title:"Director, Talent Acquisition", company:"firsthand", location:"United States", expMin:10, expMax:16, industry:"Technology", level:"Senior", geo:"Americas", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/director-talent-acquisition-firsthand-4815129" },
+  { id:36, title:"Talent Acquisition Director", company:"iDeals", location:"Global", expMin:10, expMax:16, industry:"Technology / SaaS", level:"Senior", geo:"Global", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/talent-acquisition-director-ideals-4440082" },
+  { id:37, title:"Talent Acquisition Manager", company:"EXANTE", location:"Europe", expMin:7, expMax:12, industry:"FinTech", level:"Mid", geo:"EMEA", mode:"Remote", source:"Startup.jobs", url:"https://startup.jobs/talent-acquisition-manager-remote-hybrid-exante-3991001" },
+  { id:38, title:"Talent Acquisition Director", company:"UnifyCX", location:"Hyderabad, India", expMin:12, expMax:18, industry:"BPO / CX", level:"Senior", geo:"India", mode:"Hybrid", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/talent-acquisition-director-at-unifycx-4443263194" },
+  { id:39, title:"Senior Manager, TA – GTM & Marketing, Americas", company:"Twilio", location:"Remote – US", expMin:10, expMax:16, industry:"Technology / Cloud", level:"Senior", geo:"Americas", mode:"Remote", source:"Company site", url:"http://jobs.twilio.com/careers/job/1099554612717" },
+  { id:40, title:"Talent Acquisition Lead", company:"KodeKloud", location:"UAE / global remote", expMin:8, expMax:14, industry:"EdTech", level:"Senior", geo:"EMEA", mode:"Remote", source:"LinkedIn", url:"https://ae.linkedin.com/jobs/view/talent-acquisition-lead-at-kodekloud-4377169256" },
+  { id:41, title:"Talent Acquisition Manager, Canada", company:"GHD", location:"Canada (multi-city)", expMin:8, expMax:14, industry:"Engineering / Consulting", level:"Senior", geo:"Americas", mode:"Hybrid", source:"LinkedIn", url:"https://ca.linkedin.com/jobs/view/talent-acquisition-manager-canada-at-ghd-4436535365" }
 ];
 
 let industryChart = null, geoChart = null, pendingJob = null;
@@ -3302,10 +3322,9 @@ function getFilteredJobs() {
     return true;
   });
 
-  // Always attach board-sourced TA opportunities for the same geo/level/mode/search
-  // (industry filter does not limit boards — boards span all industries)
-  const boardOpps = boardOpportunitiesFromFilters(geo, level, mode, search);
-  return curated.concat(boardOpps);
+  // Curated Dashboard shows ONLY real TA roles with direct apply links.
+  // Board X-ray / Google search stays on the Boolean Search + Source Directory tabs (backend process).
+  return curated;
 }
 
 function filtersAreActive() {
@@ -3352,47 +3371,41 @@ function updateKPIs(f) {
   const active = filtersAreActive();
   const totalSub = document.getElementById('kpiTotalSub');
   const indSub = document.getElementById('kpiIndustrySub');
-  const boardN = f.filter(j => j.isBoardOpp).length;
-  const postedN = f.length - boardN;
   if (totalSub) {
     totalSub.textContent = active
-      ? (`${postedN} posted · ${boardN} boards`)
-      : (`${postedN} posted · ${boardN} board searches`);
+      ? (f.length + ' roles · filtered')
+      : (f.length + ' roles · direct apply links');
   }
   if (indSub) indSub.textContent = active
     ? (industryCount + ' sector' + (industryCount === 1 ? '' : 's') + ' in filter')
-    : (industryCount + ' sectors · boards expand TA reach');
+    : (industryCount + ' sectors');
 }
 
 function updateTable(f) {
   const tbody = document.getElementById('jobTableBody');
   const empty = document.getElementById('emptyState');
-  const curatedN = f.filter(j => !j.isBoardOpp).length;
-  const boardN = f.filter(j => j.isBoardOpp).length;
-  document.getElementById('tableCount').textContent = f.length + (boardN ? ` (${curatedN} posted · ${boardN} board searches)` : '');
+  document.getElementById('tableCount').textContent = f.length + ' roles (direct apply links)';
   if (!f.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
   tbody.innerHTML = f.map((j) => {
     const lc = j.level==='CXO'?'badge-cxo':(j.level==='Senior'?'badge-senior':'badge-mid');
     const mc = j.mode==='Remote'?'badge-remote':(j.mode==='Hybrid'?'badge-hybrid':(j.mode==='Onsite'?'badge-onsite':'badge-hybrid'));
-    const comp = j.isBoardOpp ? 'Search board' : (j.comp || j.salary || formatSalary(j));
+    const comp = j.comp || j.salary || formatSalary(j);
     const jobJson = JSON.stringify(j).replace(/'/g, '&#39;');
     const sa = statusActionsHtml(j, jobJson);
-    const levelLabel = j.isBoardOpp ? (j.level || 'All levels') : j.level;
-    const viewLabel = j.isBoardOpp ? 'Search TA →' : 'View';
     return `<tr>
-      <td><div class="role-title">${j.title}</div>${j.isBoardOpp ? '<span class="badge badge-hybrid">🌐 Board</span>' : ''}${sa.badge}</td>
+      <td><div class="role-title">${j.title}</div>${sa.badge}</td>
       <td><div>${j.company}</div><div class="company">${j.source}</div></td>
       <td>${j.location}</td>
       <td style="font-size:0.75rem;white-space:nowrap">${comp}</td>
       <td>${j.expMin}–${j.expMax}</td>
       <td><span class="badge ${mc}">${j.mode}</span></td>
-      <td><span class="badge ${lc}">${levelLabel}</span></td>
+      <td><span class="badge ${lc}">${j.level}</span></td>
       <td><span class="badge ${j.geo==='India'?'badge-india':'badge-global'}">${j.geo}</span></td>
       <td class="actions">
-        <a class="link-btn" href="${j.url}" target="_blank" rel="noopener" onclick='markApplied(${jobJson},"Applied")'>${viewLabel}</a>
+        <a class="link-btn" href="${j.url}" target="_blank" rel="noopener" onclick='markApplied(${jobJson},"Applied")'>Apply →</a>
         ${sa.actions}
-        ${j.isBoardOpp ? '' : `<button class="action-btn tailor" onclick='tailorForJob(${jobJson})'>Update & Apply</button>`}
+        <button class="action-btn tailor" onclick='tailorForJob(${jobJson})'>Update & Apply</button>
       </td>
     </tr>`;
   }).join('');
