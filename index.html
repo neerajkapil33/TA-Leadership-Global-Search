@@ -5261,8 +5261,8 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 <script src="app.js"></script>
-  <script>
-// ========== 3-STEP NAV (inline — works even if app.js has no patch) ==========
+<script>
+// ========== 3-STEP NAV — Search opens Curated Dashboard ==========
 (function () {
   function setSimpleStep(step) {
     document.querySelectorAll('#simpleSteps .step-btn').forEach(function (btn) {
@@ -5273,11 +5273,13 @@ if ('serviceWorker' in navigator) {
       btn.style.borderColor = on ? '#38bdf8' : '#334155';
     });
 
+    // FIXED MAP
     var map = {
-      search: 'search',
-      prepare: 'tailor',
-      track: 'analytics'
+      search:  'dashboard',   // Curated jobs list + filters
+      prepare: 'tailor',      // Resume Update + Apply
+      track:   'analytics'    // Application status tracker
     };
+
     var tabName = map[step];
     if (!tabName) return;
 
@@ -5288,7 +5290,6 @@ if ('serviceWorker' in navigator) {
       return;
     }
 
-    // Fallback
     document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
     document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
     var panel = document.getElementById('panel-' + tabName);
@@ -5301,6 +5302,7 @@ if ('serviceWorker' in navigator) {
     });
   });
 
+  // Default: open Curated Dashboard (Search Jobs)
   setTimeout(function () { setSimpleStep('search'); }, 500);
 })();
 </script>
