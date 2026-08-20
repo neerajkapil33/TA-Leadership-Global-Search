@@ -2283,3 +2283,120 @@ function mergeExtraPortals() {
 
 // Uncomment the next line when you have entries in EXTRA_PORTALS
 // mergeExtraPortals();
+// ============================================================
+// GEOGRAPHY FILTER + KPI FIX (additive only)
+// ============================================================
+
+function normalizeGeoFilter(raw) {
+  if (!raw) return 'all';
+  const v = String(raw).trim().toLowerCase();
+  if (v === 'all' || v === '') return 'all';
+  if (v === 'india' || v === 'domestic') return 'India';
+  if (v.includes('global') || v.includes('ex-india') || v.includes('worldwide')) return 'Global';
+  if (v === 'emea' || v.includes('europe') || v.includes('middle east')) return 'EMEA';
+  if (v === 'apac' || v.includes('asia') || v.includes('pacific')) return 'APAC';
+  if (v === 'americas' || v.includes('america') || v === 'usa' || v === 'canada') return 'Americas';
+  // fallback: keep original casing used in jobs[].geo
+  if (raw === 'India' || raw === 'EMEA' || raw === 'APAC' || raw === 'Americas' || raw === 'Global') return raw;
+  return raw;
+}
+
+function jobMatchesGeo(j, geoNorm) {
+  if (geoNorm === 'all') return true;
+  const g = (j.geo || '').trim();
+  if (geoNorm === 'Global') return g !== 'India';           // rest of world
+  if (geoNorm === 'India') return g === 'India';
+  // EMEA / APAC / Americas — exact match on job.geo
+  return g === geoNorm;
+}
+
+// Override getFilteredJobs with corrected geography logic
+window.getFilteredJobs = function () {
+  const geoRaw = (document.getElementById('filterGeo') || {}).value || 'all';
+  const geoNorm = normalizeGeoFilter(geoRaw);
+  const industry = (document.getElementById('filterIndustry') || {}).value || 'all';
+  const level = (document.getElementById('filterLevel') || {}).value || 'all';
+  const mode = (document.getElementById('filterMode') || {}).value || 'all';
+  const minExpEl = document.getElementById('filterMinExp');
+  const minExp = minExpEl ? parseInt(minExpEl.value, 10) : 0;
+  const searchEl = document.getElementById('filterSearch');
+  const search = searchEl ? searchEl.value.toLowerCase().trim() : '';
+
+  if (typeof jobs === 'undefined' || !Array.isArray(jobs)) return [];
+
+  return jobs.filter(j => {
+    if (j.expMax != null && j.expMax < minExp) return false;
+    if (!jobMatchesGeo(j, geoNorm)) return false;
+    if (industry !== 'all' && j.industry !== industry) return false;
+    if (level !== 'all' && j.level !== level) return false;
+    if (mode !== 'all' && j.mode !== mode) return false;
+    if (search) {
+      const hay = (j.title + ' ' + j.company + ' ' + j.location + ' ' + j.industry + ' ' + (j.geo || '')).toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+};
+
+// Override updateKPIs so cards reflect the active geography filter
+window.updateKPIs = function (f) {
+  const list = f || [];
+  const totalEl = document.getElementById('kpiTotal');
+  const indiaEl = document.getElementById('kpiIndia');
+  const globalEl = document.getElementById('kpiGlobal');
+  const expEl = document.getElementById('kpiExp');
+  const indEl = document.getElementById('kpiIndustry');
+
+  if (totalEl) totalEl.textContent = list.length;
+
+  const indiaCount = list.filter(j => (j.geo || '') === 'India').length;
+  const emeaCount = list.filter(j => (j.geo || '') === 'EMEA').length;
+  const apacCount = list.filter(j => (j.geo || '') === 'APAC').length;
+  const americasCount = list.filter(j => (j.geo || '') === 'Americas').length;
+  const restCount = list.length - indiaCount;
+
+  if (indiaEl) indiaEl.textContent = indiaCount;
+  if (globalEl) globalEl.textContent = restCount; // Worldwide (ex-India) within current filter
+
+  // Optional: update subtitle labels if elements exist
+  const indiaSub = document.querySelector('#kpiIndia + * , [data-kpi="india-sub"]');
+  const globalSub = document.querySelector('#kpiGlobal + * , [data-kpi="global-sub"]');
+  // Keep existing HTML labels; numbers are now correct for the filtered set
+
+  if (expEl) {
+    if (list.length) {
+      const mins = list.map(j => j.expMin || 0);
+      const maxs = list.map(j => j.expMax || 0);
+      expEl.textContent =
+        Math.round(mins.reduce((a, b) => a + b, 0) / list.length) +
+        '–' +
+        Math.round(maxs.reduce((a, b) => a + b, 0) / list.length);
+    } else {
+      expEl.textContent = '—';
+    }
+  }
+
+  if (indEl) {
+    const counts = {};
+    list.forEach(j => {
+      const key = j.industry || 'Other';
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    indEl.textContent = top ? String(top[0]).split(' / ')[0] : '—';
+  }
+
+  // Debug (optional — remove later)
+  console.log('[Geo Fix] filtered:', list.length,
+    '| India:', indiaCount, '| EMEA:', emeaCount, '| APAC:', apacCount, '| Americas:', americasCount);
+};
+
+// Re-apply filters once after this patch loads
+setTimeout(() => {
+  try {
+    if (typeof applyFilters === 'function') applyFilters();
+    console.log('[Geo Fix] Geography filter override active');
+  } catch (e) {
+    console.warn('[Geo Fix] applyFilters retry failed', e);
+  }
+}, 500);
