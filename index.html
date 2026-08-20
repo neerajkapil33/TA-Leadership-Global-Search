@@ -3082,23 +3082,102 @@ function loadTemplate(type) {
 }
 
 // ========== DASHBOARD ==========
+/** Map dashboard geo filter → keywords that match GLOBAL_JOB_BOARDS region strings */
+function boardRegionMatchers(geo) {
+  if (geo === 'India') return [/india/i, /south asia/i, /bangladesh/i, /pakistan/i, /nepal/i, /sri lanka/i];
+  if (geo === 'Global') return [/europe/i, /united kingdom/i, /united states/i, /north america/i, /asia-pacific/i, /middle east/i, /latin america/i, /africa/i, /global/i, /remote/i];
+  if (geo === 'APAC') return [/asia-pacific/i, /australia/i, /singapore/i, /japan/i, /china/i, /hong kong/i, /malaysia/i, /indonesia/i, /philippines/i, /thailand/i, /vietnam/i, /korea/i, /taiwan/i, /new zealand/i];
+  if (geo === 'EMEA') return [/europe/i, /united kingdom/i, /middle east/i, /africa/i, /germany/i, /france/i, /netherlands/i, /uae/i, /saudi/i];
+  if (geo === 'Americas') return [/united states/i, /north america/i, /canada/i, /latin america/i, /brazil/i, /mexico/i];
+  // all
+  return [/.*/];
+}
+
+function taSearchUrlForBoard(board, level, mode) {
+  const levelQ =
+    level === 'CXO' ? 'Chief Talent Officer OR "VP Talent" OR "Head of Talent"' :
+    level === 'Senior' ? '"Head of Talent Acquisition" OR "Director Talent Acquisition"' :
+    level === 'Mid' ? '"Talent Acquisition Manager" OR "Senior Manager Talent Acquisition"' :
+    'Talent Acquisition OR "Head of Talent" OR "Director Talent Acquisition"';
+  const modeQ =
+    mode === 'Remote' ? ' remote' :
+    mode === 'Hybrid' ? ' hybrid' :
+    mode === 'Onsite' ? ' onsite OR office' : '';
+  const q = (levelQ + modeQ).trim();
+  // Prefer board URL + Google site: TA search when we have a real domain
+  try {
+    if (board.url && !/google\.com\/search|jobboardfinder\.com\/search/i.test(board.url)) {
+      const host = new URL(board.url).hostname.replace(/^www\./, '');
+      return 'https://www.google.com/search?q=' + encodeURIComponent('site:' + host + ' (' + q + ') (job OR jobs OR hiring)') + '&tbs=qdr:m';
+    }
+  } catch (e) {}
+  return 'https://www.google.com/search?q=' + encodeURIComponent('"' + (board.name || '') + '" (' + q + ') jobs') + '&tbs=qdr:m';
+}
+
+/** Build TA opportunity rows from the global board directory matching current filters */
+function boardOpportunitiesFromFilters(geo, level, mode, search) {
+  if (typeof getAllPortals !== 'function') return [];
+  const matchers = boardRegionMatchers(geo);
+  const lvl = level === 'all' ? '' : level;
+  const md = mode === 'all' ? '' : mode;
+  const q = (search || '').toLowerCase();
+
+  let boards = getAllPortals().filter(p => p.type !== 'live');
+  // Region match
+  if (geo !== 'all') {
+    boards = boards.filter(p => {
+      const hay = (p.region || '') + ' ' + (p.name || '');
+      return matchers.some(re => re.test(hay));
+    });
+  }
+  if (q) {
+    boards = boards.filter(p =>
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.region || '').toLowerCase().includes(q)
+    );
+  }
+
+  // Cap for UI performance while still far beyond 25 curated rows
+  const MAX_BOARD_ROWS = 400;
+  return boards.slice(0, MAX_BOARD_ROWS).map((p, i) => {
+    const region = p.region || '';
+    const isIndia = /india/i.test(region);
+    return {
+      id: 'board-' + i + '-' + (p.name || '').slice(0, 40),
+      title: 'Talent Acquisition roles on ' + p.name,
+      company: p.name,
+      location: region,
+      expMin: 5,
+      expMax: 25,
+      industry: 'Job Board · All industries',
+      level: lvl || 'Mid–Senior–CXO',
+      geo: isIndia ? 'India' : 'Global',
+      mode: md || 'Any',
+      source: 'Global Board Directory',
+      url: taSearchUrlForBoard(p, lvl, md),
+      boardUrl: p.url || '',
+      isBoardOpp: true,
+      comp: '—',
+      salary: ''
+    };
+  });
+}
+
 function getFilteredJobs() {
-  // Default (all filters = all / 0): return every curated role — all industries, domestic + global
+  // Curated postings + matching global job-board TA search opportunities
   const geo = document.getElementById('filterGeo').value;
   const industry = document.getElementById('filterIndustry').value;
   const level = document.getElementById('filterLevel').value;
   const mode = document.getElementById('filterMode').value;
   const minExp = parseInt(document.getElementById('filterMinExp').value, 10);
   const search = document.getElementById('filterSearch').value.toLowerCase().trim();
-  // Slider range is 5–25; default 5 = include essentially all mid+ roles
   const effectiveMinExp = isNaN(minExp) ? 5 : minExp;
 
   const apacRe = /singapore|hong kong|australia|japan|korea|malaysia|indonesia|philippines|thailand|vietnam|taiwan|china|apac|asia|bengaluru|bangalore|hyderabad|pune|mumbai|delhi|chennai|india/i;
   const emeaRe = /london|uk|united kingdom|germany|berlin|munich|france|paris|netherlands|amsterdam|dubai|uae|saudi|ireland|dublin|switzerland|europe|emea|africa/i;
   const americasRe = /united states|usa|canada|toronto|new york|san francisco|mexico|brazil|latin|americas/i;
 
-  return jobs.filter(j => {
-    // Role must allow at least effectiveMinExp years (uses job's expMax ceiling)
+  const curated = jobs.filter(j => {
     if (j.expMax < effectiveMinExp) return false;
 
     if (geo !== 'all') {
@@ -3106,7 +3185,6 @@ function getFilteredJobs() {
       if (geo === 'India') {
         if (j.geo !== 'India' && !/india|bengaluru|bangalore|hyderabad|pune|mumbai|delhi|chennai|gurgaon|gurugram|noida/i.test(loc)) return false;
       } else if (geo === 'Global') {
-        // Global = non-India only
         if (j.geo === 'India') return false;
       } else if (geo === 'APAC') {
         if (!apacRe.test(loc) && j.geo !== 'APAC' && j.geo !== 'India') return false;
@@ -3119,7 +3197,6 @@ function getFilteredJobs() {
       }
     }
 
-    // Industry only when user picks a specific one (not FinTech-only by default)
     if (industry && industry !== 'all' && j.industry !== industry) return false;
     if (level && level !== 'all' && j.level !== level) return false;
     if (mode && mode !== 'all' && j.mode !== mode) return false;
@@ -3130,6 +3207,11 @@ function getFilteredJobs() {
     }
     return true;
   });
+
+  // Always attach board-sourced TA opportunities for the same geo/level/mode/search
+  // (industry filter does not limit boards — boards span all industries)
+  const boardOpps = boardOpportunitiesFromFilters(geo, level, mode, search);
+  return curated.concat(boardOpps);
 }
 
 function filtersAreActive() {
@@ -3176,45 +3258,57 @@ function updateKPIs(f) {
   const active = filtersAreActive();
   const totalSub = document.getElementById('kpiTotalSub');
   const indSub = document.getElementById('kpiIndustrySub');
-  if (totalSub) totalSub.textContent = active ? 'Matching filters' : 'All · no filter';
+  const boardN = f.filter(j => j.isBoardOpp).length;
+  const postedN = f.length - boardN;
+  if (totalSub) {
+    totalSub.textContent = active
+      ? (`${postedN} posted · ${boardN} boards`)
+      : (`${postedN} posted · ${boardN} board searches`);
+  }
   if (indSub) indSub.textContent = active
     ? (industryCount + ' sector' + (industryCount === 1 ? '' : 's') + ' in filter')
-    : (industryCount + ' sectors · all industries');
+    : (industryCount + ' sectors · boards expand TA reach');
 }
 
 function updateTable(f) {
   const tbody = document.getElementById('jobTableBody');
   const empty = document.getElementById('emptyState');
-  document.getElementById('tableCount').textContent = f.length;
+  const curatedN = f.filter(j => !j.isBoardOpp).length;
+  const boardN = f.filter(j => j.isBoardOpp).length;
+  document.getElementById('tableCount').textContent = f.length + (boardN ? ` (${curatedN} posted · ${boardN} board searches)` : '');
   if (!f.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
   tbody.innerHTML = f.map((j) => {
     const lc = j.level==='CXO'?'badge-cxo':(j.level==='Senior'?'badge-senior':'badge-mid');
-    const mc = j.mode==='Remote'?'badge-remote':(j.mode==='Hybrid'?'badge-hybrid':'badge-onsite');
-    const comp = j.comp || j.salary || formatSalary(j);
+    const mc = j.mode==='Remote'?'badge-remote':(j.mode==='Hybrid'?'badge-hybrid':(j.mode==='Onsite'?'badge-onsite':'badge-hybrid'));
+    const comp = j.isBoardOpp ? 'Search board' : (j.comp || j.salary || formatSalary(j));
     const jobJson = JSON.stringify(j).replace(/'/g, '&#39;');
     const sa = statusActionsHtml(j, jobJson);
+    const levelLabel = j.isBoardOpp ? (j.level || 'All levels') : j.level;
+    const viewLabel = j.isBoardOpp ? 'Search TA →' : 'View';
     return `<tr>
-      <td><div class="role-title">${j.title}</div>${sa.badge}</td>
+      <td><div class="role-title">${j.title}</div>${j.isBoardOpp ? '<span class="badge badge-hybrid">🌐 Board</span>' : ''}${sa.badge}</td>
       <td><div>${j.company}</div><div class="company">${j.source}</div></td>
       <td>${j.location}</td>
       <td style="font-size:0.75rem;white-space:nowrap">${comp}</td>
       <td>${j.expMin}–${j.expMax}</td>
       <td><span class="badge ${mc}">${j.mode}</span></td>
-      <td><span class="badge ${lc}">${j.level}</span></td>
+      <td><span class="badge ${lc}">${levelLabel}</span></td>
       <td><span class="badge ${j.geo==='India'?'badge-india':'badge-global'}">${j.geo}</span></td>
       <td class="actions">
-        <a class="link-btn" href="${j.url}" target="_blank" rel="noopener" onclick='markApplied(${jobJson},"Applied")'>View</a>
+        <a class="link-btn" href="${j.url}" target="_blank" rel="noopener" onclick='markApplied(${jobJson},"Applied")'>${viewLabel}</a>
         ${sa.actions}
-        <button class="action-btn tailor" onclick='tailorForJob(${jobJson})'>Update & Apply</button>
+        ${j.isBoardOpp ? '' : `<button class="action-btn tailor" onclick='tailorForJob(${jobJson})'>Update & Apply</button>`}
       </td>
     </tr>`;
   }).join('');
 }
 
 function updateCharts(f) {
+  // Charts: prefer real curated postings; group board rows as one sector
+  const forCharts = f.map(j => j.isBoardOpp ? Object.assign({}, j, { industry: 'Global job boards (search)' }) : j);
   const indCounts = {}, geoCounts = {};
-  f.forEach(j => { indCounts[j.industry]=(indCounts[j.industry]||0)+1; geoCounts[j.geo]=(geoCounts[j.geo]||0)+1; });
+  forCharts.forEach(j => { indCounts[j.industry]=(indCounts[j.industry]||0)+1; geoCounts[j.geo]=(geoCounts[j.geo]||0)+1; });
   const indLabels = Object.keys(indCounts).sort((a,b)=>indCounts[b]-indCounts[a]);
   const colors = ['#38bdf8','#818cf8','#34d399','#fbbf24','#f87171','#a78bfa','#2dd4bf','#fb923c'];
   if (industryChart) industryChart.destroy();
