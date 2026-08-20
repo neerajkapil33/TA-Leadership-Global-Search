@@ -2400,3 +2400,61 @@ setTimeout(() => {
     console.warn('[Geo Fix] applyFilters retry failed', e);
   }
 }, 500);
+// ============================================================
+// SIMPLIFIED 3-STEP NAV (additive — does not break existing JS)
+// ============================================================
+
+function setSimpleStep(step) {
+  // Style the 3 buttons
+  document.querySelectorAll('#simpleSteps .step-btn').forEach(btn => {
+    const on = btn.dataset.step === step;
+    btn.classList.toggle('active', on);
+    btn.style.background = on ? '#1e293b' : '#0f172a';
+    btn.style.color = on ? '#e2e8f0' : '#94a3b8';
+    btn.style.borderColor = on ? '#38bdf8' : '#334155';
+  });
+
+  // Map simplified steps → your existing tab data-tab values
+  // Change only these names if your HTML uses different data-tab attributes
+  const map = {
+    search:  ['search', 'live'],           // Global Boolean + Live Jobs
+    prepare: ['tailor', 'resume'],         // Resume Update + Country Resumes
+    track:   ['analytics', 'report']       // Application Analytics
+  };
+
+  const targets = map[step] || [];
+
+  // Prefer clicking your existing tabs so all current handlers still run
+  let clicked = false;
+  targets.forEach(name => {
+    const tab = document.querySelector('.tab[data-tab="' + name + '"]');
+    if (tab && !clicked) {
+      tab.click();
+      clicked = true;
+    }
+  });
+
+  // Fallback if tab buttons are not found
+  if (!clicked) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    targets.forEach(name => {
+      const panel = document.getElementById('panel-' + name);
+      if (panel) panel.classList.add('active');
+    });
+  }
+
+  console.log('[Simple Nav] step =', step);
+}
+
+// Wire buttons
+document.querySelectorAll('#simpleSteps .step-btn').forEach(btn => {
+  btn.addEventListener('click', () => setSimpleStep(btn.dataset.step));
+});
+
+// Start on Search
+setTimeout(() => setSimpleStep('search'), 350);
+
+// Optional helper: call this from any "Prepare & Apply" / "Update & Apply" button
+window.goToPrepareStep = function () {
+  setSimpleStep('prepare');
+};
