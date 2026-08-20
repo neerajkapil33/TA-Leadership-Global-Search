@@ -2458,3 +2458,53 @@ setTimeout(() => setSimpleStep('search'), 350);
 window.goToPrepareStep = function () {
   setSimpleStep('prepare');
 };
+// ============================================================
+// SIMPLIFIED 3-STEP NAV — FIXED TAB MAPPING
+// ============================================================
+
+function setSimpleStep(step) {
+  // Style the 3 buttons
+  document.querySelectorAll('#simpleSteps .step-btn').forEach(btn => {
+    const on = btn.dataset.step === step;
+    btn.classList.toggle('active', on);
+    btn.style.background = on ? '#1e293b' : '#0f172a';
+    btn.style.color = on ? '#e2e8f0' : '#94a3b8';
+    btn.style.borderColor = on ? '#38bdf8' : '#334155';
+  });
+
+  // CORRECT map based on your real data-tab values
+  const map = {
+    search:  'search',      // Global Boolean + X-ray Search
+    prepare: 'tailor',      // Resume Update + Apply
+    track:   'analytics'    // Application Analytics Report
+  };
+
+  const tabName = map[step];
+  if (!tabName) return;
+
+  const tab = document.querySelector('.tab[data-tab="' + tabName + '"]');
+  if (tab) {
+    tab.click();   // uses your existing tab logic — safe
+    console.log('[Simple Nav] opened tab:', tabName);
+  } else {
+    // Fallback if tab button not found
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const panel = document.getElementById('panel-' + tabName);
+    if (panel) panel.classList.add('active');
+    console.warn('[Simple Nav] tab button not found, showed panel directly:', tabName);
+  }
+}
+
+// Wire the 3 buttons
+document.querySelectorAll('#simpleSteps .step-btn').forEach(btn => {
+  btn.addEventListener('click', () => setSimpleStep(btn.dataset.step));
+});
+
+// Default to Search
+setTimeout(() => setSimpleStep('search'), 400);
+
+// Helper for "Prepare & Apply" buttons on job rows
+window.goToPrepareStep = function () {
+  setSimpleStep('prepare');
+};
