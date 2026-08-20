@@ -2182,3 +2182,104 @@ renderPortalDirectory();
 updateResumeHints();
 renderSavedResumes();
 initMyProfile();
+// ============================================================
+// ADDITIVE FIXES ONLY — do not remove any existing code above
+// ============================================================
+
+// 1. Safer Source Directory render (fixes "0 portals")
+function renderPortalDirectorySafe() {
+  const tbody = document.getElementById('portalDirectoryBody');
+  const countEl = document.getElementById('directoryCount');
+  if (!tbody) {
+    console.warn('[TA Fix] portalDirectoryBody not found in HTML');
+    return;
+  }
+  if (typeof ALL_PORTALS === 'undefined' || !Array.isArray(ALL_PORTALS)) {
+    console.warn('[TA Fix] ALL_PORTALS is missing');
+    return;
+  }
+  if (countEl) countEl.textContent = ALL_PORTALS.length;
+  tbody.innerHTML = ALL_PORTALS.map(p => {
+    let actions = '';
+    if (p.type === 'live') {
+      const site = p.url || '#';
+      const search = p.searchUrl || p.url || '#';
+      actions = `
+        <a class="link-btn" href="${site}" target="_blank" rel="noopener">Open site →</a>
+        <button class="action-btn" onclick="openPortal('${search}')">Search TA →</button>
+        <button class="action-btn tailor" onclick="fetchLiveJobs()">Fetch API</button>`;
+    } else {
+      const act = (typeof portalAction === 'function') ? portalAction(p) : `openPortal('${p.url || '#'}')`;
+      actions = `<button class="action-btn" onclick="${act}">Search Live →</button>`;
+    }
+    return `<tr>
+      <td><div class="role-title">${p.name}</div></td>
+      <td class="company">${p.region}</td>
+      <td>${p.type === 'live'
+        ? '<span class="badge badge-remote">🔴 Live API</span>'
+        : '<span class="badge badge-hybrid">🔍 Boolean/X-ray</span>'}</td>
+      <td class="actions">${actions}</td>
+    </tr>`;
+  }).join('');
+  console.log('[TA Fix] Source Directory rendered with', ALL_PORTALS.length, 'portals');
+}
+
+// 2. Force re-render of Source Directory after page is fully ready
+setTimeout(() => {
+  try {
+    renderPortalDirectorySafe();
+  } catch (e) {
+    console.error('[TA Fix] renderPortalDirectorySafe failed', e);
+  }
+}, 400);
+
+// Also re-run when user clicks the Live Jobs tab (in case DOM was not ready earlier)
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    if (t.dataset.tab === 'live' || t.dataset.tab === 'search') {
+      setTimeout(renderPortalDirectorySafe, 200);
+    }
+  });
+});
+
+// 3. Better Live Jobs status update (prevents permanent ⏳)
+const _originalFetchLiveJobs = typeof fetchLiveJobs === 'function' ? fetchLiveJobs : null;
+if (_originalFetchLiveJobs) {
+  window.fetchLiveJobs = async function () {
+    try {
+      await _originalFetchLiveJobs();
+    } catch (err) {
+      console.warn('[TA Fix] fetchLiveJobs error', err);
+    }
+    // Always update the timestamp even if some APIs failed
+    const ts = document.getElementById('lastFetchedAt');
+    if (ts) ts.textContent = new Date().toLocaleTimeString();
+  };
+}
+
+// 4. Optional: merge extra portals later without touching original ALL_PORTALS
+// You can grow this array and call mergeExtraPortals() anytime
+const EXTRA_PORTALS = [
+  // Example – add more here or load from portals.json later
+  // { name: 'Example Extra', region: 'Global', type: 'xray', url: 'https://example.com' }
+];
+
+function mergeExtraPortals() {
+  if (typeof ALL_PORTALS === 'undefined') return;
+  const existingNames = new Set(ALL_PORTALS.map(p => p.name.toLowerCase()));
+  let added = 0;
+  EXTRA_PORTALS.forEach(p => {
+    if (p.name && !existingNames.has(p.name.toLowerCase())) {
+      ALL_PORTALS.push(p);
+      existingNames.add(p.name.toLowerCase());
+      added++;
+    }
+  });
+  if (added > 0) {
+    renderPortalDirectorySafe();
+    console.log('[TA Fix] Added', added, 'extra portals. Total now:', ALL_PORTALS.length);
+  }
+}
+
+// Uncomment the next line when you have entries in EXTRA_PORTALS
+// mergeExtraPortals();
