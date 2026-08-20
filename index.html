@@ -5260,6 +5260,51 @@ if ('serviceWorker' in navigator) {
     </div>
   </div>
 </div>
+<script src="app.js"></script>
+  <script>
+// ========== 3-STEP NAV (inline — works even if app.js has no patch) ==========
+(function () {
+  function setSimpleStep(step) {
+    document.querySelectorAll('#simpleSteps .step-btn').forEach(function (btn) {
+      var on = btn.getAttribute('data-step') === step;
+      btn.classList.toggle('active', on);
+      btn.style.background = on ? '#1e293b' : '#0f172a';
+      btn.style.color = on ? '#e2e8f0' : '#94a3b8';
+      btn.style.borderColor = on ? '#38bdf8' : '#334155';
+    });
 
+    var map = {
+      search: 'search',
+      prepare: 'tailor',
+      track: 'analytics'
+    };
+    var tabName = map[step];
+    if (!tabName) return;
+
+    var tab = document.querySelector('.tab[data-tab="' + tabName + '"]');
+    if (tab) {
+      tab.click();
+      console.log('[Simple Nav] opened:', tabName);
+      return;
+    }
+
+    // Fallback
+    document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+    document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+    var panel = document.getElementById('panel-' + tabName);
+    if (panel) panel.classList.add('active');
+  }
+
+  document.querySelectorAll('#simpleSteps .step-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      setSimpleStep(btn.getAttribute('data-step'));
+    });
+  });
+
+  setTimeout(function () { setSimpleStep('search'); }, 500);
+})();
+</script>
+</body>
+</html>
 </body>
 </html>
