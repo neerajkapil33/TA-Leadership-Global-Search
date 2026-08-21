@@ -2241,18 +2241,83 @@ img, svg, video, canvas, iframe {
         </section>
 
         <section id="section-interviews" class="section">
-          <div class="page-header"><h1>Interviews</h1><p>Upcoming and past interviews</p></div>
-          <div class="card"><p class="muted">12 interviews currently in progress. Detailed calendar view coming soon.</p></div>
+          <div class="page-header">
+            <h1>Interviews</h1>
+            <p>Upcoming and past interviews — schedule, stage, and prep notes</p>
+          </div>
+          <div class="card">
+            <div id="interviewsList" class="job-list"></div>
+          </div>
         </section>
 
         <section id="section-offers" class="section">
-          <div class="page-header"><h1>Offers</h1><p>3 offers in hand</p></div>
-          <div class="card"><p class="muted">Track offer details, compensation, and decision deadlines.</p></div>
+          <div class="page-header">
+            <h1>Offers</h1>
+            <p>3 offers in hand — compensation, deadline, and decision status</p>
+          </div>
+          <div class="card">
+            <div id="offersList" class="job-list"></div>
+          </div>
         </section>
 
         <section id="section-analytics" class="section">
-          <div class="page-header"><h1>Analytics</h1><p>Application performance & insights</p></div>
-          <div class="card"><canvas id="analyticsChart" height="120"></canvas></div>
+          <div class="page-header">
+            <h1>Analytics</h1>
+            <p>Application performance, funnel, sources and match insights — graphical view</p>
+          </div>
+          <div class="filters-row" style="margin-bottom:1rem">
+            <select id="analyticsPeriod" class="sm-select">
+              <option value="daily">Today</option>
+              <option value="weekly">This Week</option>
+              <option value="monthly" selected>This Month</option>
+              <option value="quarterly">This Quarter</option>
+              <option value="annually">This Year</option>
+            </select>
+          </div>
+          <div class="kpi-row" id="analyticsKpiRow" style="margin-bottom:1.25rem">
+            <div class="kpi-card"><div class="kpi-body"><div class="kpi-value" id="aKpiApps">24</div><div class="kpi-label">Applications</div></div></div>
+            <div class="kpi-card"><div class="kpi-body"><div class="kpi-value" id="aKpiResp">8</div><div class="kpi-label">Responses</div></div></div>
+            <div class="kpi-card"><div class="kpi-body"><div class="kpi-value" id="aKpiInt">5</div><div class="kpi-label">Interviews</div></div></div>
+            <div class="kpi-card"><div class="kpi-body"><div class="kpi-value" id="aKpiOff">3</div><div class="kpi-label">Offers</div></div></div>
+            <div class="kpi-card"><div class="kpi-body"><div class="kpi-value" id="aKpiRespRate">33%</div><div class="kpi-label">Response Rate</div></div></div>
+            <div class="kpi-card"><div class="kpi-body"><div class="kpi-value" id="aKpiIntRate">63%</div><div class="kpi-label">Interview Rate</div></div></div>
+          </div>
+          <div class="dashboard-grid" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr); margin-bottom:1.25rem">
+            <div class="card">
+              <div class="card-header"><h3>Application funnel</h3><span class="muted">Saved to Offer conversion</span></div>
+              <canvas id="chartFunnel" height="200"></canvas>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Applications over time</h3><span class="muted">Volume trend</span></div>
+              <canvas id="chartTrend" height="200"></canvas>
+            </div>
+          </div>
+          <div class="dashboard-grid" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr); margin-bottom:1.25rem">
+            <div class="card">
+              <div class="card-header"><h3>Top sources by applications</h3><span class="muted">Channel performance</span></div>
+              <canvas id="chartSources" height="220"></canvas>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Status mix</h3><span class="muted">Where applications sit today</span></div>
+              <canvas id="chartStatus" height="220"></canvas>
+            </div>
+          </div>
+          <div class="dashboard-grid" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr); margin-bottom:1.25rem">
+            <div class="card">
+              <div class="card-header"><h3>Match score distribution</h3><span class="muted">Curated jobs vs your profile</span></div>
+              <canvas id="chartMatch" height="200"></canvas>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Response vs interview rate</h3><span class="muted">By period</span></div>
+              <canvas id="chartRates" height="200"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>AI insights</h3></div>
+            <div class="insight"><div class="insight-icon">💡</div><p>Applications with <strong>80%+ match score</strong> get <strong>3.6× more responses</strong> than those below 70%.</p></div>
+            <div class="insight"><div class="insight-icon">📈</div><p>Highest response rate is for <strong>Director-level TA roles in Technology / FinTech</strong>.</p></div>
+            <div class="insight"><div class="insight-icon">🎯</div><p><strong>LinkedIn</strong> and <strong>Company Sites</strong> drive the most interview conversions this month.</p></div>
+          </div>
         </section>
 
         <section id="section-alerts" class="section">
@@ -2413,7 +2478,36 @@ img, svg, video, canvas, iframe {
     { id: 2, title: "Global Head of Talent Acquisition", company: "FinTech Innovations", match: 89, tags: ["Global TA", "Talent Strategy", "Leadership"], loc: "Singapore · Remote", salary: "$160K – $210K", exp: "15+ Yrs", posted: "3 hours ago", source: "LinkedIn", jd: "Own end-to-end global TA for a high-growth FinTech. Build scalable hiring engines, partner with C-suite on succession, and implement modern TA tech stack." },
     { id: 3, title: "Director of Talent Acquisition", company: "NextGen Digital", match: 86, tags: ["Scaling Teams", "TA Operations", "HR Tech"], loc: "Dubai, UAE · Hybrid", salary: "$150K – $190K", exp: "12+ Yrs", posted: "5 hours ago", source: "Indeed", jd: "Scale TA operations across MENA. Lead TA ops, recruitment marketing, and HR tech adoption while delivering quality-of-hire improvements." },
     { id: 4, title: "Head of Talent Acquisition – APAC", company: "CloudScale Systems", match: 91, tags: ["APAC", "Leadership Hiring", "Remote-first"], loc: "Bangalore / Singapore · Hybrid", salary: "$140K – $185K", exp: "12+ Yrs", posted: "6 hours ago", source: "Company Site", jd: "Build APAC TA capability for a remote-first SaaS leader. Focus on engineering and product leadership hiring." },
-    { id: 5, title: "Senior Director, Global TA", company: "Horizon Payments", match: 88, tags: ["Payments", "Global Mobility", "DEI"], loc: "Amsterdam · Hybrid", salary: "$170K – $205K", exp: "14+ Yrs", posted: "8 hours ago", source: "LinkedIn", jd: "Drive global TA excellence for a payments platform operating in 40+ markets. Strong DEI and mobility agenda." }
+    { id: 5, title: "Senior Director, Global TA", company: "Horizon Payments", match: 88, tags: ["Payments", "Global Mobility", "DEI"], loc: "Amsterdam · Hybrid", salary: "$170K – $205K", exp: "14+ Yrs", posted: "8 hours ago", source: "LinkedIn", jd: "Drive global TA excellence for a payments platform operating in 40+ markets. Strong DEI and mobility agenda." },
+    { id: 6, title: "VP Talent Acquisition, EMEA", company: "TerraNova Soft", match: 92, tags: ["EMEA", "Enterprise TA", "Workforce Strategy"], loc: "Berlin / Remote", salary: "$175K – $215K", exp: "15+ Yrs", posted: "10 hours ago", source: "Executive Search", jd: "Lead EMEA TA for enterprise software. Own leadership hiring, TA transformation, and regional employer brand." },
+    { id: 7, title: "Director – Talent Acquisition (Global)", company: "PayFlow International", match: 90, tags: ["FinTech", "Global TA", "AI Hiring"], loc: "Gurugram / Hybrid", salary: "$130K – $170K", exp: "12+ Yrs", posted: "12 hours ago", source: "Naukri", jd: "Scale global TA for a payments company across 30+ countries. Strong focus on AI hiring systems and quality of hire." },
+    { id: 8, title: "Head of TA & Employer Brand", company: "NovaHealth Tech", match: 85, tags: ["Employer Brand", "TA Leadership", "Healthcare Tech"], loc: "Dubai · Hybrid", salary: "$145K – $180K", exp: "12+ Yrs", posted: "1 day ago", source: "Bayt", jd: "Combine TA leadership with employer brand strategy for a fast-growing health-tech platform in MENA." }
+  ];
+
+  var APPLICATIONS = [
+    { company: "Microsoft", role: "Director – Talent Acquisition", status: "interview", statusLabel: "Interview 2", applied: "12 Aug 2026", updated: "1 day ago", loc: "Hyderabad / Remote", stage: "Panel + Hiring Manager" },
+    { company: "Amazon", role: "Head of Talent Acquisition", status: "interview", statusLabel: "Interview 1", applied: "10 Aug 2026", updated: "2 days ago", loc: "Bangalore · Hybrid", stage: "Recruiter screen done" },
+    { company: "Google", role: "VP Talent Acquisition", status: "screening", statusLabel: "Screening", applied: "08 Aug 2026", updated: "3 days ago", loc: "Singapore / Remote", stage: "Awaiting HM feedback" },
+    { company: "Salesforce", role: "Director TA – APAC", status: "applied", statusLabel: "Applied", applied: "05 Aug 2026", updated: "5 days ago", loc: "Singapore", stage: "Application under review" },
+    { company: "Shopify", role: "Global TA Lead", status: "applied", statusLabel: "Applied", applied: "04 Aug 2026", updated: "6 days ago", loc: "Remote – EMEA", stage: "Submitted" },
+    { company: "Stripe", role: "Head of Talent, International", status: "screening", statusLabel: "Screening", applied: "02 Aug 2026", updated: "1 week ago", loc: "Dublin / Remote", stage: "TA ops screen" },
+    { company: "TerraPay", role: "Global TA Leader (internal path)", status: "interview", statusLabel: "Interview 3", applied: "28 Jul 2026", updated: "4 days ago", loc: "Gurugram", stage: "Final leadership round" },
+    { company: "ServiceNow", role: "Senior Director, Global TA", status: "applied", statusLabel: "Applied", applied: "01 Aug 2026", updated: "1 week ago", loc: "Amsterdam · Hybrid", stage: "Recruiter reviewing" }
+  ];
+
+  var INTERVIEWS = [
+    { company: "Microsoft", role: "Director – Talent Acquisition", round: "Interview 2 – Panel", when: "Tomorrow, 10:00 AM IST", mode: "Video (Teams)", interviewer: "VP HR + TA Lead", prep: "Prepare global TA transformation case; metrics on quality-of-hire and AI hiring systems at TerraPay.", status: "upcoming" },
+    { company: "Amazon", role: "Head of Talent Acquisition", round: "Interview 1 – Hiring Manager", when: "Fri 22 Aug, 3:30 PM IST", mode: "Video (Chime)", interviewer: "Director, People Experience", prep: "Leadership principles examples; scaling TA in high-growth environments.", status: "upcoming" },
+    { company: "TerraPay", role: "Global TA Leader", round: "Interview 3 – Final", when: "Mon 25 Aug, 11:00 AM IST", mode: "On-site / Hybrid Gurugram", interviewer: "CHRO + CEO", prep: "3-year TA roadmap; cost avoidance and capability-building outcomes.", status: "upcoming" },
+    { company: "Google", role: "VP Talent Acquisition", round: "Recruiter screen", when: "Completed 18 Aug", mode: "Phone", interviewer: "Executive Recruiter", prep: "—", status: "completed" },
+    { company: "Stripe", role: "Head of Talent, International", round: "TA Ops screen", when: "Completed 15 Aug", mode: "Video", interviewer: "TA Partner", prep: "—", status: "completed" },
+    { company: "Microsoft", role: "Director – Talent Acquisition", round: "Interview 1 – Recruiter", when: "Completed 14 Aug", mode: "Video", interviewer: "Senior Recruiter", prep: "—", status: "completed" }
+  ];
+
+  var OFFERS = [
+    { company: "Horizon Regional Bank", role: "Director of Talent Acquisition", comp: "$155K base + 20% bonus", equity: "—", location: "Dubai · Hybrid", deadline: "29 Aug 2026", status: "Under review" },
+    { company: "ScaleUp SaaS", role: "Head of Global TA", comp: "$165K base + 15% bonus", equity: "0.15% options", location: "Remote – EMEA", deadline: "02 Sep 2026", status: "Negotiating" },
+    { company: "PayBridge", role: "VP Talent Acquisition", comp: "$190K base + 25% bonus", equity: "RSUs", location: "London / Hybrid", deadline: "05 Sep 2026", status: "Received" }
   ];
 
   var NOTIFICATIONS = [
@@ -2519,6 +2613,13 @@ img, svg, video, canvas, iframe {
     if (nav) nav.classList.add("active");
     window.scrollTo({ top: 0, behavior: "smooth" });
     closeSidebar();
+    if (id === "analytics") {
+      setTimeout(function () { initCharts(); }, 50);
+    }
+    if (id === "curated") renderCuratedJobs();
+    if (id === "applications") renderApplications();
+    if (id === "interviews") renderInterviews();
+    if (id === "offers") renderOffers();
   }
 
   function openSidebar() {
@@ -2563,27 +2664,106 @@ img, svg, video, canvas, iframe {
   }
 
   // ---------- Render curated jobs ----------
+  function jobCardHtml(j, m) {
+    return (
+      '<div class="job-card" data-job-id="' + j.id + '">' +
+      '<div class="match-badge high">' + m + '%<span>Match</span></div>' +
+      '<div class="job-content">' +
+      '<div class="job-title-row"><h3>' + j.title + '</h3>' +
+      '<div class="company-row"><span class="company">' + j.company + '</span> <span class="verified">✓</span></div></div>' +
+      '<div class="tags">' + j.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join("") + "</div>" +
+      '<div class="job-meta"><span>📍 ' + j.loc + "</span><span>💰 " + j.salary + "</span><span>⏱ " + j.exp + "</span><span>🕒 " + j.posted + '</span><span class="source">' + j.source + "</span></div>" +
+      "</div>" +
+      '<div class="job-actions">' +
+      '<button class="btn-ghost btn-view-jd" data-job-id="' + j.id + '">View JD</button>' +
+      '<button class="btn-ghost btn-cv-match" data-job-id="' + j.id + '">CV Match</button>' +
+      '<button class="btn-primary sm btn-apply" data-job-id="' + j.id + '">Apply</button>' +
+      '<button class="icon-btn bookmark" data-job-id="' + j.id + '" title="Save">🔖</button>' +
+      "</div></div>"
+    );
+  }
+
   function renderCuratedJobs() {
-    var list = $("#curatedJobsList");
-    if (!list) return;
-    list.innerHTML = CURATED_JOBS.map(function (j) {
+    var html = CURATED_JOBS.map(function (j) {
       var m = scoreAgainstProfile(j);
       j._liveMatch = m;
+      return jobCardHtml(j, m);
+    }).join("");
+    var list = $("#curatedJobsList");
+    if (list) list.innerHTML = html;
+    var full = $("#fullCuratedList");
+    if (full) full.innerHTML = html;
+    var countEl = document.querySelector("#section-curated .page-header p");
+    if (countEl) countEl.textContent = CURATED_JOBS.length + " AI-ranked TA leadership opportunities (live match vs your profile)";
+  }
+
+  function renderApplications() {
+    var body = $("#appsTableBody");
+    if (!body) return;
+    body.innerHTML = APPLICATIONS.map(function (a) {
       return (
-        '<div class="job-card" data-job-id="' + j.id + '">' +
-        '<div class="match-badge high">' + m + '%<span>Match</span></div>' +
-        '<div class="job-content">' +
-        '<div class="job-title-row"><h3>' + j.title + '</h3>' +
-        '<div class="company-row"><span class="company">' + j.company + '</span> <span class="verified">✓</span></div></div>' +
-        '<div class="tags">' + j.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join("") + "</div>" +
-        '<div class="job-meta"><span>📍 ' + j.loc + "</span><span>💰 " + j.salary + "</span><span>⏱ " + j.exp + "</span><span>🕒 " + j.posted + '</span><span class="source">' + j.source + "</span></div>" +
-        "</div>" +
-        '<div class="job-actions">' +
-        '<button class="btn-ghost btn-view-jd" data-job-id="' + j.id + '">View JD</button>' +
-        '<button class="btn-ghost btn-cv-match" data-job-id="' + j.id + '">CV Match</button>' +
-        '<button class="btn-primary sm btn-apply" data-job-id="' + j.id + '">Apply</button>' +
-        '<button class="icon-btn bookmark" data-job-id="' + j.id + '" title="Save">🔖</button>' +
-        "</div></div>"
+        "<tr><td><strong>" + a.company + "</strong><div style='font-size:.72rem;color:#94a3b8'>" + a.loc + "</div></td>" +
+        "<td>" + a.role + "</td>" +
+        '<td><span class="status ' + a.status + '">' + a.statusLabel + "</span></td>" +
+        "<td>" + a.applied + "</td>" +
+        "<td>" + a.updated + "</td>" +
+        '<td><button class="btn-ghost btn-view-app" data-company="' + a.company + '" style="padding:4px 10px">View</button></td></tr>'
+      );
+    }).join("");
+    var fp = $("#fullPipeline");
+    if (fp) {
+      fp.innerHTML =
+        '<div class="stage"><span class="stage-count">' + PIPELINE.saved + '</span><span class="stage-label">Saved</span></div><div class="stage-arrow">→</div>' +
+        '<div class="stage"><span class="stage-count">' + PIPELINE.applied + '</span><span class="stage-label">Applied</span></div><div class="stage-arrow">→</div>' +
+        '<div class="stage"><span class="stage-count">' + PIPELINE.screening + '</span><span class="stage-label">Screening</span></div><div class="stage-arrow">→</div>' +
+        '<div class="stage"><span class="stage-count">' + PIPELINE.interview + '</span><span class="stage-label">Interview</span></div><div class="stage-arrow">→</div>' +
+        '<div class="stage"><span class="stage-count">' + PIPELINE.offer + '</span><span class="stage-label">Offer</span></div>';
+    }
+  }
+
+  function renderInterviews() {
+    var list = $("#interviewsList");
+    if (!list) return;
+    var upcoming = INTERVIEWS.filter(function (i) { return i.status === "upcoming"; });
+    var past = INTERVIEWS.filter(function (i) { return i.status === "completed"; });
+    var html = "<h3 style='font-size:.95rem;margin-bottom:.75rem'>Upcoming (" + upcoming.length + ")</h3>";
+    html += upcoming.map(function (i) {
+      return (
+        '<div class="job-card" style="flex-direction:column;align-items:stretch">' +
+        '<div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
+        "<div><h3 style='font-size:.95rem'>" + i.company + " — " + i.role + "</h3>" +
+        "<div style='font-size:.82rem;color:#64748b;margin-top:2px'>" + i.round + "</div></div>" +
+        '<span class="status interview">' + i.when + "</span></div>" +
+        '<div class="job-meta" style="margin-top:.5rem"><span>📹 ' + i.mode + "</span><span>👤 " + i.interviewer + "</span></div>" +
+        (i.prep ? '<p style="font-size:.82rem;margin-top:.5rem;line-height:1.45"><strong>Prep:</strong> ' + i.prep + "</p>" : "") +
+        "</div>"
+      );
+    }).join("");
+    html += "<h3 style='font-size:.95rem;margin:1.25rem 0 .75rem'>Completed (" + past.length + ")</h3>";
+    html += past.map(function (i) {
+      return (
+        '<div class="job-card" style="opacity:.9">' +
+        "<div class='job-content'><h3 style='font-size:.9rem'>" + i.company + " — " + i.role + "</h3>" +
+        "<div style='font-size:.8rem;color:#64748b'>" + i.round + " · " + i.when + " · " + i.mode + "</div></div>" +
+        '<span class="status applied">Done</span></div>'
+      );
+    }).join("");
+    list.innerHTML = html;
+  }
+
+  function renderOffers() {
+    var list = $("#offersList");
+    if (!list) return;
+    list.innerHTML = OFFERS.map(function (o) {
+      return (
+        '<div class="job-card" style="flex-direction:column;align-items:stretch">' +
+        '<div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
+        "<div><h3 style='font-size:.95rem'>" + o.role + "</h3>" +
+        "<div style='font-size:.85rem;color:#64748b'>" + o.company + " · " + o.location + "</div></div>" +
+        '<span class="status offer">' + o.status + "</span></div>" +
+        '<div class="job-meta" style="margin-top:.55rem"><span>💰 ' + o.comp + "</span>" +
+        (o.equity && o.equity !== "—" ? "<span>📈 " + o.equity + "</span>" : "") +
+        "<span>🗓 Decision by " + o.deadline + "</span></div></div>"
       );
     }).join("");
   }
@@ -2608,17 +2788,272 @@ img, svg, video, canvas, iframe {
 
   function wireAnalyticsDropdown() {
     var sel = $(".analytics-card .sm-select") || $(".analytics-card select");
-    if (!sel) return;
-    sel.innerHTML =
-      '<option value="daily">Today</option>' +
-      '<option value="weekly">This Week</option>' +
-      '<option value="monthly" selected>This Month</option>' +
-      '<option value="quarterly">This Quarter</option>' +
-      '<option value="annually">This Year</option>';
-    sel.addEventListener("change", function () {
-      applyAnalyticsPeriod(sel.value);
-      toast("Analytics updated: " + sel.options[sel.selectedIndex].text);
-    });
+    if (sel) {
+      sel.innerHTML =
+        '<option value="daily">Today</option>' +
+        '<option value="weekly">This Week</option>' +
+        '<option value="monthly" selected>This Month</option>' +
+        '<option value="quarterly">This Quarter</option>' +
+        '<option value="annually">This Year</option>';
+      sel.addEventListener("change", function () {
+        applyAnalyticsPeriod(sel.value);
+        toast("Analytics updated: " + sel.options[sel.selectedIndex].text);
+      });
+    }
+    var ap = $("#analyticsPeriod");
+    if (ap) {
+      ap.addEventListener("change", function () {
+        updateAnalyticsKpis(ap.value);
+        updateChartsForPeriod(ap.value);
+        toast("Analytics period: " + ap.options[ap.selectedIndex].text);
+      });
+    }
+  }
+
+  // ---------- Chart.js analytics ----------
+  var chartInstances = {};
+  var TREND_DATA = {
+    daily:   { labels: ["6am", "9am", "12pm", "3pm", "6pm", "9pm"], apps: [0, 1, 0, 1, 0, 0] },
+    weekly:  { labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], apps: [1, 2, 0, 1, 1, 0, 1] },
+    monthly: { labels: ["W1", "W2", "W3", "W4"], apps: [5, 7, 6, 6] },
+    quarterly:{ labels: ["Jan", "Feb", "Mar"], apps: [18, 22, 21] },
+    annually:{ labels: ["Q1", "Q2", "Q3", "Q4"], apps: [42, 51, 48, 57] }
+  };
+
+  function destroyChart(id) {
+    if (chartInstances[id]) {
+      try { chartInstances[id].destroy(); } catch (e) {}
+      chartInstances[id] = null;
+    }
+  }
+
+  function updateAnalyticsKpis(period) {
+    var d = ANALYTICS[period] || ANALYTICS.monthly;
+    if ($("#aKpiApps")) $("#aKpiApps").textContent = d.apps;
+    if ($("#aKpiResp")) $("#aKpiResp").textContent = d.responses;
+    if ($("#aKpiInt")) $("#aKpiInt").textContent = d.interviews;
+    if ($("#aKpiOff")) $("#aKpiOff").textContent = d.offers;
+    if ($("#aKpiRespRate")) $("#aKpiRespRate").textContent = d.respRate + "%";
+    if ($("#aKpiIntRate")) $("#aKpiIntRate").textContent = d.intRate + "%";
+  }
+
+  function initCharts() {
+    if (typeof Chart === "undefined") {
+      console.warn("Chart.js not loaded");
+      return;
+    }
+    var purple = "#7c3aed";
+    var purpleSoft = "rgba(124,58,237,0.15)";
+    var green = "#10b981";
+    var blue = "#3b82f6";
+    var orange = "#f97316";
+    var teal = "#14b8a6";
+    var violet = "#8b5cf6";
+
+    // Funnel
+    destroyChart("funnel");
+    var fEl = $("#chartFunnel");
+    if (fEl) {
+      chartInstances.funnel = new Chart(fEl, {
+        type: "bar",
+        data: {
+          labels: ["Saved", "Applied", "Screening", "Interview", "Offer"],
+          datasets: [{
+            label: "Count",
+            data: [PIPELINE.saved, PIPELINE.applied, PIPELINE.screening, PIPELINE.interview, PIPELINE.offer],
+            backgroundColor: [purple, blue, orange, violet, green],
+            borderRadius: 8,
+            barThickness: 28
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, grid: { color: "#f1f5f9" } },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Trend
+    destroyChart("trend");
+    var tEl = $("#chartTrend");
+    if (tEl) {
+      var td = TREND_DATA.monthly;
+      chartInstances.trend = new Chart(tEl, {
+        type: "line",
+        data: {
+          labels: td.labels,
+          datasets: [{
+            label: "Applications",
+            data: td.apps,
+            borderColor: purple,
+            backgroundColor: purpleSoft,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: purple
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "#f1f5f9" } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Sources horizontal bar
+    destroyChart("sources");
+    var sEl = $("#chartSources");
+    if (sEl) {
+      chartInstances.sources = new Chart(sEl, {
+        type: "bar",
+        data: {
+          labels: SOURCES_PERF.map(function (s) { return s.name; }),
+          datasets: [{
+            label: "Applications",
+            data: SOURCES_PERF.map(function (s) { return s.count; }),
+            backgroundColor: purple,
+            borderRadius: 6,
+            barThickness: 18
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, grid: { color: "#f1f5f9" } },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Status doughnut
+    destroyChart("status");
+    var stEl = $("#chartStatus");
+    if (stEl) {
+      var applied = APPLICATIONS.filter(function (a) { return a.status === "applied"; }).length;
+      var screening = APPLICATIONS.filter(function (a) { return a.status === "screening"; }).length;
+      var interview = APPLICATIONS.filter(function (a) { return a.status === "interview"; }).length;
+      chartInstances.status = new Chart(stEl, {
+        type: "doughnut",
+        data: {
+          labels: ["Applied", "Screening", "Interview"],
+          datasets: [{
+            data: [applied, screening, interview],
+            backgroundColor: [violet, orange, blue],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: "bottom", labels: { boxWidth: 12, padding: 14 } }
+          },
+          cutout: "58%"
+        }
+      });
+    }
+
+    // Match distribution
+    destroyChart("match");
+    var mEl = $("#chartMatch");
+    if (mEl) {
+      var buckets = { "70-79": 0, "80-89": 0, "90-100": 0 };
+      CURATED_JOBS.forEach(function (j) {
+        var m = j._liveMatch || j.match || 80;
+        if (m >= 90) buckets["90-100"]++;
+        else if (m >= 80) buckets["80-89"]++;
+        else buckets["70-79"]++;
+      });
+      chartInstances.match = new Chart(mEl, {
+        type: "bar",
+        data: {
+          labels: ["70–79%", "80–89%", "90–100%"],
+          datasets: [{
+            label: "Jobs",
+            data: [buckets["70-79"], buckets["80-89"], buckets["90-100"]],
+            backgroundColor: [orange, blue, green],
+            borderRadius: 8,
+            barThickness: 36
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: "#f1f5f9" } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Rates by period
+    destroyChart("rates");
+    var rEl = $("#chartRates");
+    if (rEl) {
+      chartInstances.rates = new Chart(rEl, {
+        type: "bar",
+        data: {
+          labels: ["Today", "Week", "Month", "Quarter", "Year"],
+          datasets: [
+            {
+              label: "Response %",
+              data: [ANALYTICS.daily.respRate, ANALYTICS.weekly.respRate, ANALYTICS.monthly.respRate, ANALYTICS.quarterly.respRate, ANALYTICS.annually.respRate],
+              backgroundColor: purple,
+              borderRadius: 6
+            },
+            {
+              label: "Interview %",
+              data: [ANALYTICS.daily.intRate, ANALYTICS.weekly.intRate, ANALYTICS.monthly.intRate, ANALYTICS.quarterly.intRate, ANALYTICS.annually.intRate],
+              backgroundColor: green,
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: "bottom", labels: { boxWidth: 12 } } },
+          scales: {
+            y: { beginAtZero: true, max: 100, grid: { color: "#f1f5f9" } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+  }
+
+  function updateChartsForPeriod(period) {
+    updateAnalyticsKpis(period);
+    var td = TREND_DATA[period] || TREND_DATA.monthly;
+    if (chartInstances.trend) {
+      chartInstances.trend.data.labels = td.labels;
+      chartInstances.trend.data.datasets[0].data = td.apps;
+      chartInstances.trend.update();
+    }
+    var d = ANALYTICS[period] || ANALYTICS.monthly;
+    if (chartInstances.funnel) {
+      // scale funnel roughly with period
+      var scale = d.apps / (ANALYTICS.monthly.apps || 24);
+      chartInstances.funnel.data.datasets[0].data = [
+        Math.round(PIPELINE.saved * Math.max(0.3, scale)),
+        d.apps,
+        Math.max(1, Math.round(d.apps * 0.33)),
+        d.interviews,
+        d.offers
+      ];
+      chartInstances.funnel.update();
+    }
   }
 
   // ---------- Sources performance ----------
@@ -3028,6 +3463,23 @@ img, svg, video, canvas, iframe {
       toast("Source filter: " + chip.textContent.trim().split("\n")[0]);
       return;
     }
+    if (el.classList.contains("btn-view-app")) {
+      e.preventDefault();
+      var co = el.getAttribute("data-company");
+      var app = APPLICATIONS.find(function (a) { return a.company === co; });
+      if (app) {
+        openModal(
+          "<h2>" + app.company + "</h2>" +
+          "<p style='color:#64748b'>" + app.role + "</p>" +
+          "<p style='margin-top:.75rem'><strong>Status:</strong> " + app.statusLabel + "</p>" +
+          "<p><strong>Stage:</strong> " + app.stage + "</p>" +
+          "<p><strong>Location:</strong> " + app.loc + "</p>" +
+          "<p><strong>Applied:</strong> " + app.applied + " · <strong>Updated:</strong> " + app.updated + "</p>" +
+          '<div class="modal-actions"><button class="btn-primary" id="btnCloseModal2">Close</button></div>'
+        );
+      }
+      return;
+    }
     if (el.classList.contains("btn-open-source")) {
       e.preventDefault();
       toast("Opening " + (el.getAttribute("data-name") || "source") + "…");
@@ -3103,23 +3555,18 @@ img, svg, video, canvas, iframe {
     });
 
     renderCuratedJobs();
+    renderApplications();
+    renderInterviews();
+    renderOffers();
     renderNotifs();
     renderSourceBars();
     renderPipeline();
     renderSourcesDir();
     wireAnalyticsDropdown();
     applyAnalyticsPeriod("monthly");
-
-    // Apps table
-    var appsBody = $("#appsTableBody");
-    if (appsBody) {
-      appsBody.innerHTML =
-        '<tr><td><strong>Microsoft</strong></td><td>Director – Talent Acquisition</td><td><span class="status interview">Interview 2</span></td><td>12 Aug 2026</td><td>1 day ago</td><td><button class="btn-ghost" style="padding:4px 10px">View</button></td></tr>' +
-        '<tr><td><strong>Amazon</strong></td><td>Head of Talent Acquisition</td><td><span class="status interview">Interview 1</span></td><td>10 Aug 2026</td><td>2 days ago</td><td><button class="btn-ghost" style="padding:4px 10px">View</button></td></tr>' +
-        '<tr><td><strong>Google</strong></td><td>VP Talent Acquisition</td><td><span class="status screening">Screening</span></td><td>08 Aug 2026</td><td>3 days ago</td><td><button class="btn-ghost" style="padding:4px 10px">View</button></td></tr>' +
-        '<tr><td><strong>Salesforce</strong></td><td>Director TA</td><td><span class="status applied">Applied</span></td><td>05 Aug 2026</td><td>5 days ago</td><td><button class="btn-ghost" style="padding:4px 10px">View</button></td></tr>' +
-        '<tr><td><strong>Shopify</strong></td><td>Global TA Lead</td><td><span class="status applied">Applied</span></td><td>04 Aug 2026</td><td>6 days ago</td><td><button class="btn-ghost" style="padding:4px 10px">View</button></td></tr>';
-    }
+    updateAnalyticsKpis("monthly");
+    // Charts need a short delay so canvas is in DOM / section may be hidden
+    setTimeout(function () { initCharts(); }, 100);
 
     if (isLoggedIn()) {
       hideLogin();
