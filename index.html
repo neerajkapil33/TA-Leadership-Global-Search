@@ -2321,36 +2321,84 @@ img, svg, video, canvas, iframe {
         </section>
 
         <section id="section-alerts" class="section">
-          <div class="page-header"><h1>Alerts</h1></div>
-          <div class="card"><p class="muted">6 new alerts. Configure job alerts by title, location, and salary.</p></div>
+          <div class="page-header">
+            <h1>Alerts</h1>
+            <p>Real-time job alerts by title, location, salary and match score</p>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <div class="card-header flex-between">
+              <h3>Create alert</h3>
+            </div>
+            <div class="filters-row" style="flex-wrap:wrap">
+              <input type="text" id="alertTitle" placeholder="Job title (e.g. VP Talent Acquisition)" style="flex:1;min-width:180px" />
+              <input type="text" id="alertLocation" placeholder="Location / country" style="flex:1;min-width:140px" />
+              <input type="text" id="alertSalary" placeholder="Min salary (e.g. 150K)" style="width:140px" />
+              <select id="alertMatch" class="sm-select">
+                <option value="70">Match ≥ 70%</option>
+                <option value="80" selected>Match ≥ 80%</option>
+                <option value="90">Match ≥ 90%</option>
+              </select>
+              <button class="btn-primary" id="btnCreateAlert">Create alert</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header flex-between">
+              <h3>Active alerts</h3>
+              <span class="muted" id="alertLiveLabel">Live · updating</span>
+            </div>
+            <div id="alertsList"></div>
+          </div>
         </section>
 
         <section id="section-mycv" class="section">
           <div class="page-header">
             <h1>My CV / Profile</h1>
-            <p>Neeraj Kapil · Global Talent Acquisition Leader</p>
+            <p id="mycvSubtitle">Neeraj Kapil · Global Talent Acquisition Leader</p>
           </div>
-          <div class="card">
+          <div class="card" style="margin-bottom:1rem">
             <div class="profile-header">
-              <img src="https://ui-avatars.com/api/?name=Neeraj+Kapil&background=7c3aed&color=fff&size=120" class="profile-avatar" alt="" />
+              <img id="profilePhoto" src="https://ui-avatars.com/api/?name=Neeraj+Kapil&background=7c3aed&color=fff&size=120" class="profile-avatar" alt="" />
               <div>
-                <h2>Neeraj Kapil</h2>
-                <p class="muted">Global Talent Acquisition & Workforce Strategy Leader | AI Driven TA Transformation</p>
+                <h2 id="profileNameDisplay">Neeraj Kapil</h2>
+                <p class="muted" id="profileTitleDisplay">Global Talent Acquisition & Workforce Strategy Leader | AI Driven TA Transformation</p>
+                <p id="profileLocationDisplay" class="muted">Gurugram · Global (EMEA, APAC, Americas, MEA)</p>
                 <p><a href="https://www.linkedin.com/in/neeraj-kapil/" target="_blank" class="link">linkedin.com/in/neeraj-kapil</a></p>
               </div>
             </div>
-            <div class="profile-about">
+            <div class="profile-about" id="profileAboutBlock">
               <h3>About</h3>
-              <p>With 20+ years of global experience across Europe, North America, LATAM, Middle East, Africa, and APAC, I build talent ecosystems that accelerate business growth, workforce capability, and organizational culture.</p>
-              <p>Focus: leadership pipeline readiness, capability building, succession planning, employer brand, AI talent systems, and global TA transformation.</p>
+              <p id="profileAboutText">With 20+ years of global experience across Europe, North America, LATAM, Middle East, Africa, and APAC, I build talent ecosystems that accelerate business growth, workforce capability, and organizational culture.</p>
               <h3>Current</h3>
               <p><strong>TerraPay</strong> · Global Talent Acquisition Leader · Jan 2023 – Present</p>
               <p>Hired to build a global, scalable TA engine across 35+ countries; architect AI-enabled hiring systems; lead DEI, succession, and employer brand for hyper-growth.</p>
             </div>
-            <div class="btn-row" style="margin-top:16px">
-              <button class="btn-primary">Download Country Resume</button>
-              <button class="btn-outline">Edit Profile</button>
-              <button class="btn-outline">Upload Photo</button>
+            <div class="btn-row" style="margin-top:16px;flex-wrap:wrap">
+              <label class="btn-outline" style="cursor:pointer;margin:0">
+                Upload photo
+                <input type="file" id="photoUpload" accept="image/*" style="display:none" />
+              </label>
+              <label class="btn-outline" style="cursor:pointer;margin:0">
+                Upload resume
+                <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx" style="display:none" />
+              </label>
+              <button class="btn-outline" id="btnEditProfile">Edit profile</button>
+            </div>
+            <p id="resumeFileLabel" class="muted" style="margin-top:.5rem;font-size:.8rem"></p>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Regional CV templates</h3>
+              <span class="muted">Format optimized by market — download or preview</span>
+            </div>
+            <div class="tools-grid" id="regionTemplates">
+              <div class="tool-card" data-region="india"><h3>🇮🇳 India</h3><p>Photo optional · detailed education · notice period</p><button class="btn-outline sm btn-region-cv" data-region="india">Preview / Download</button></div>
+              <div class="tool-card" data-region="europe"><h3>🇪🇺 Europe</h3><p>GDPR-friendly · no photo · skills-first</p><button class="btn-outline sm btn-region-cv" data-region="europe">Preview / Download</button></div>
+              <div class="tool-card" data-region="uk"><h3>🇬🇧 UK</h3><p>2 pages max · achievements quantified</p><button class="btn-outline sm btn-region-cv" data-region="uk">Preview / Download</button></div>
+              <div class="tool-card" data-region="northamerica"><h3>🇺🇸 North America</h3><p>US/Canada · no photo · impact metrics</p><button class="btn-outline sm btn-region-cv" data-region="northamerica">Preview / Download</button></div>
+              <div class="tool-card" data-region="latam"><h3>🌎 LATAM</h3><p>Spanish/English · hybrid format</p><button class="btn-outline sm btn-region-cv" data-region="latam">Preview / Download</button></div>
+              <div class="tool-card" data-region="middleeast"><h3>🇦🇪 Middle East</h3><p>Photo common · nationality · visa</p><button class="btn-outline sm btn-region-cv" data-region="middleeast">Preview / Download</button></div>
+              <div class="tool-card" data-region="apac"><h3>🇸🇬 APAC</h3><p>Singapore/HK/AU · concise senior CV</p><button class="btn-outline sm btn-region-cv" data-region="apac">Preview / Download</button></div>
+              <div class="tool-card" data-region="africa"><h3>🌍 Africa</h3><p>Regional + global mobility focus</p><button class="btn-outline sm btn-region-cv" data-region="africa">Preview / Download</button></div>
             </div>
           </div>
         </section>
@@ -2360,18 +2408,55 @@ img, svg, video, canvas, iframe {
           <div class="tools-grid">
             <div class="tool-card"><h3>Boolean Builder</h3><p>Generate advanced Boolean & Google X-ray strings</p><button class="btn-outline sm" data-section="ai-search">Open</button></div>
             <div class="tool-card"><h3>Resume Tailor</h3><p>AI optimize CV for specific JDs</p><button class="btn-outline sm" data-section="cv-match">Open</button></div>
-            <div class="tool-card"><h3>Cover Letter Generator</h3><p>Create tailored cover letters</p><button class="btn-outline sm">Coming soon</button></div>
+            <div class="tool-card"><h3>Cover Letter Generator</h3><p>Create tailored cover letters</p><button class="btn-outline sm" id="btnCoverLetter">Open</button></div>
             <div class="tool-card"><h3>Application Tracker</h3><p>Full pipeline management</p><button class="btn-outline sm" data-section="applications">Open</button></div>
           </div>
         </section>
 
         <section id="section-settings" class="section">
-          <div class="page-header"><h1>Settings</h1></div>
+          <div class="page-header">
+            <h1>Settings</h1>
+            <p>Profile, security, recovery email and preferences</p>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <h3 style="margin-bottom:.75rem">Profile</h3>
+            <div class="login-field"><label>Full name</label><input type="text" id="setName" value="Neeraj Kapil" /></div>
+            <div class="login-field"><label>Title / headline</label><input type="text" id="setTitle" value="Global Talent Acquisition & Workforce Strategy Leader" /></div>
+            <div class="login-field"><label>Email</label><input type="email" id="setEmail" value="neeraj.kapil@example.com" /></div>
+            <div class="login-field"><label>Location</label><input type="text" id="setLocation" value="Gurugram, India · Global mobility" /></div>
+            <div class="login-field"><label>LinkedIn</label><input type="text" id="setLinkedIn" value="https://www.linkedin.com/in/neeraj-kapil/" /></div>
+            <div class="btn-row"><button class="btn-primary" id="btnSaveProfile">Save profile</button></div>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <h3 style="margin-bottom:.75rem">Change password</h3>
+            <div class="login-field"><label>Current password</label><input type="password" id="setCurrentPass" /></div>
+            <div class="login-field"><label>New password</label><input type="password" id="setNewPass" /></div>
+            <div class="login-field"><label>Confirm new password</label><input type="password" id="setConfirmPass" /></div>
+            <div class="btn-row"><button class="btn-primary" id="btnChangePass">Update password</button></div>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <h3 style="margin-bottom:.75rem">Password recovery</h3>
+            <p class="muted" style="margin-bottom:.75rem;font-size:.85rem">Email used to send a reset link if you forget your password.</p>
+            <div class="login-field"><label>Recovery email</label><input type="email" id="setRecoveryEmail" value="neeraj.kapil@example.com" /></div>
+            <div class="btn-row">
+              <button class="btn-primary" id="btnSaveRecovery">Save recovery email</button>
+              <button class="btn-outline" id="btnTestRecovery">Send test recovery email</button>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:1rem">
+            <h3 style="margin-bottom:.75rem">Photo & resume</h3>
+            <div class="btn-row" style="flex-wrap:wrap">
+              <label class="btn-outline" style="cursor:pointer;margin:0">Change photo<input type="file" id="setPhotoUpload" accept="image/*" style="display:none" /></label>
+              <label class="btn-outline" style="cursor:pointer;margin:0">Upload resume<input type="file" id="setResumeUpload" accept=".pdf,.doc,.docx" style="display:none" /></label>
+            </div>
+            <p id="setFileLabel" class="muted" style="margin-top:.5rem;font-size:.8rem"></p>
+          </div>
           <div class="card">
-            <h3>Preferences</h3>
-            <label class="toggle"><input type="checkbox" checked> Email alerts for high-match jobs</label>
-            <label class="toggle"><input type="checkbox" checked> Weekly summary report</label>
-            <label class="toggle"><input type="checkbox"> Dark mode (sidebar always dark)</label>
+            <h3 style="margin-bottom:.75rem">Preferences</h3>
+            <label class="toggle"><input type="checkbox" id="prefEmailAlerts" checked> Email alerts for high-match jobs</label>
+            <label class="toggle"><input type="checkbox" id="prefWeekly" checked> Weekly summary report</label>
+            <label class="toggle"><input type="checkbox" id="prefRealtime" checked> Real-time dashboard updates</label>
+            <div class="btn-row" style="margin-top:.75rem"><button class="btn-primary" id="btnSavePrefs">Save preferences</button></div>
           </div>
         </section>
       </main>
@@ -2437,6 +2522,52 @@ img, svg, video, canvas, iframe {
     </div>
   </div>
 
+  <!-- Global Search Popup -->
+  <div class="modal-overlay" id="searchModal">
+    <div class="modal-box" style="max-width:780px;max-height:90vh;overflow-y:auto">
+      <button class="modal-close" id="btnCloseSearch">×</button>
+      <h2 style="margin-bottom:.35rem">Global search</h2>
+      <p class="muted" style="margin-bottom:1rem;font-size:.85rem">Enter job title, company, skills, city and country — results appear below based on your inputs.</p>
+      <div class="filters-row" style="flex-wrap:wrap;margin-bottom:.5rem;gap:.5rem">
+        <input type="text" id="gsQuery" placeholder="Job title (e.g. Sales Manager)" style="flex:1;min-width:160px" />
+        <input type="text" id="gsCompany" placeholder="Company (optional)" style="flex:1;min-width:140px" />
+      </div>
+      <div class="filters-row" style="flex-wrap:wrap;margin-bottom:.5rem;gap:.5rem">
+        <input type="text" id="gsSkills" placeholder="Skills (e.g. B2B, SaaS)" style="flex:1;min-width:140px" />
+        <input type="text" id="gsLocation" placeholder="City (e.g. Gurgaon)" style="flex:1;min-width:120px" />
+      </div>
+      <div class="filters-row" style="flex-wrap:wrap;margin-bottom:1rem;gap:.5rem">
+        <select id="gsCountry" class="sm-select">
+          <option value="">Any country</option>
+          <option>India</option>
+          <option>United Kingdom</option>
+          <option>United States</option>
+          <option>Singapore</option>
+          <option>UAE</option>
+          <option>Germany</option>
+          <option>Netherlands</option>
+          <option>Canada</option>
+          <option>Australia</option>
+          <option>South Africa</option>
+          <option>Brazil</option>
+          <option>Remote / Worldwide</option>
+        </select>
+        <select id="gsType" class="sm-select">
+          <option value="jobs">Jobs</option>
+          <option value="companies">Companies</option>
+          <option value="skills">Skills + roles</option>
+        </select>
+        <button class="btn-primary" id="btnRunGlobalSearch">Search</button>
+      </div>
+      <div id="searchStatus" class="muted" style="font-size:.8rem;margin-bottom:.5rem;display:none"></div>
+      <div id="searchResultsBox" style="display:none">
+        <div id="searchResultsList" class="job-list" style="max-height:360px;overflow-y:auto;margin-bottom:1rem"></div>
+        <p style="font-size:.82rem;margin-bottom:.4rem"><strong>Also open on:</strong></p>
+        <div id="searchResultLinks" style="display:flex;flex-wrap:wrap;gap:.5rem"></div>
+      </div>
+    </div>
+  </div>
+
   
 <script>
 /* ============================================================
@@ -2448,6 +2579,9 @@ img, svg, video, canvas, iframe {
   var AUTH_USER = "kapilneeraj";
   var AUTH_PASS = "Terr0r_67";
   var SESSION_KEY = "ta_cc_session_v1";
+  var STORE_KEY = "ta_cc_profile_v1";
+  var ALERTS_KEY = "ta_cc_alerts_v1";
+  var PASS_KEY = "ta_cc_pass_v1";
 
   var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); };
@@ -2462,14 +2596,66 @@ img, svg, video, canvas, iframe {
     t._timer = setTimeout(function () { t.classList.remove("show"); }, duration);
   }
 
+  function loadPass() {
+    try {
+      var p = localStorage.getItem(PASS_KEY);
+      if (p) AUTH_PASS = p;
+    } catch (e) {}
+  }
+  loadPass();
+
   // ---------- Profile (Neeraj Kapil) ----------
   var PROFILE = {
     name: "Neeraj Kapil",
     title: "Global Talent Acquisition & Workforce Strategy Leader",
+    email: "neeraj.kapil@example.com",
+    recoveryEmail: "neeraj.kapil@example.com",
+    location: "Gurugram, India · Global mobility",
+    linkedin: "https://www.linkedin.com/in/neeraj-kapil/",
+    about: "With 20+ years of global experience across Europe, North America, LATAM, Middle East, Africa, and APAC, I build talent ecosystems that accelerate business growth, workforce capability, and organizational culture.",
+    photoData: null,
+    resumeName: null,
     skills: ["Talent Acquisition", "Global TA", "Leadership Hiring", "Employer Branding", "Succession Planning", "DEI", "TA Operations", "Workforce Strategy", "AI Recruitment Systems", "Capability Building"],
     experienceYears: 20,
     industries: ["Technology", "FinTech", "Telecom", "Payments"],
     missingForTarget: ["HR Analytics", "People Analytics", "Talent Intelligence", "AI Recruitment", "Workforce Planning Analytics"]
+  };
+
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (saved) {
+      Object.keys(saved).forEach(function (k) { PROFILE[k] = saved[k]; });
+    }
+  } catch (e) {}
+
+  function saveProfile() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(PROFILE)); } catch (e) {}
+  }
+
+  var JOB_ALERTS = [];
+  try {
+    JOB_ALERTS = JSON.parse(localStorage.getItem(ALERTS_KEY) || "[]");
+  } catch (e) { JOB_ALERTS = []; }
+  if (!JOB_ALERTS.length) {
+    JOB_ALERTS = [
+      { id: 1, title: "VP Talent Acquisition", location: "Europe / Remote", salary: "150K+", match: 80, hits: 3, last: "12 min ago" },
+      { id: 2, title: "Director Talent Acquisition", location: "Singapore / UAE", salary: "140K+", match: 85, hits: 2, last: "1 hour ago" },
+      { id: 3, title: "Head of TA", location: "India / APAC", salary: "120K+", match: 80, hits: 5, last: "3 hours ago" }
+    ];
+  }
+  function saveAlerts() {
+    try { localStorage.setItem(ALERTS_KEY, JSON.stringify(JOB_ALERTS)); } catch (e) {}
+  }
+
+  var REGION_CV = {
+    india: { name: "India", notes: "Include notice period, detailed education, preferred locations. Photo optional.", layout: "Name · Contact · Summary · Experience (detailed) · Education · Skills · Certifications" },
+    europe: { name: "Europe (GDPR)", notes: "No photo, no date of birth, no marital status. Skills-first, 2 pages max.", layout: "Name · Contact · Professional summary · Core skills · Experience · Education" },
+    uk: { name: "United Kingdom", notes: "2 pages preferred. Quantified achievements. No photo.", layout: "Name · Contact · Profile · Key achievements · Experience · Education · Skills" },
+    northamerica: { name: "North America (US/Canada)", notes: "No photo. Impact metrics and scope. 1–2 pages.", layout: "Name · Contact · Summary · Experience (impact bullets) · Skills · Education" },
+    latam: { name: "LATAM", notes: "English and/or Spanish. Hybrid US + regional norms.", layout: "Name · Contact · Resumen · Experiencia · Educación · Skills" },
+    middleeast: { name: "Middle East", notes: "Photo often expected. Nationality and visa status helpful.", layout: "Photo · Name · Nationality/Visa · Summary · Experience · Education · Skills" },
+    apac: { name: "APAC (SG/HK/AU)", notes: "Concise senior CV. Regional + global scope clear.", layout: "Name · Contact · Executive summary · Experience · Education · Skills" },
+    africa: { name: "Africa", notes: "Regional mobility and multi-country experience emphasized.", layout: "Name · Contact · Summary · Experience · Education · Languages · Skills" }
   };
 
   // ---------- Curated jobs (realtime-sim) ----------
@@ -2620,6 +2806,325 @@ img, svg, video, canvas, iframe {
     if (id === "applications") renderApplications();
     if (id === "interviews") renderInterviews();
     if (id === "offers") renderOffers();
+    if (id === "alerts") renderAlerts();
+    if (id === "mycv") syncProfileUI();
+    if (id === "settings") fillSettingsForm();
+  }
+
+  function renderAlerts() {
+    var list = $("#alertsList");
+    if (!list) return;
+    if (!JOB_ALERTS.length) {
+      list.innerHTML = '<p class="muted">No alerts yet. Create one above.</p>';
+      return;
+    }
+    list.innerHTML = JOB_ALERTS.map(function (a) {
+      return (
+        '<div class="job-card" style="flex-direction:column;align-items:stretch;margin-bottom:.65rem">' +
+        '<div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
+        "<div><h3 style='font-size:.9rem'>" + a.title + "</h3>" +
+        "<div style='font-size:.8rem;color:#64748b'>" + a.location + " · " + a.salary + " · Match ≥ " + a.match + "%</div></div>" +
+        '<span class="status interview">' + a.hits + " new</span></div>" +
+        '<div class="job-meta" style="margin-top:.4rem"><span>Last match: ' + a.last + "</span>" +
+        '<button class="btn-ghost btn-run-alert" data-aid="' + a.id + '" style="padding:2px 8px;font-size:12px">Search now</button>' +
+        '<button class="btn-ghost btn-del-alert" data-aid="' + a.id + '" style="padding:2px 8px;font-size:12px">Delete</button></div></div>'
+      );
+    }).join("");
+  }
+
+  function openGlobalSearch(prefill) {
+    var m = $("#searchModal");
+    if (m) m.classList.add("open");
+    var q = $("#gsQuery");
+    if (q) {
+      if (prefill) q.value = prefill;
+      setTimeout(function () { q.focus(); }, 100);
+    }
+  }
+  function closeGlobalSearch() {
+    var m = $("#searchModal");
+    if (m) m.classList.remove("open");
+  }
+  function runGlobalSearch() {
+    var q = (($("#gsQuery") && $("#gsQuery").value) || "").trim();
+    var company = (($("#gsCompany") && $("#gsCompany").value) || "").trim();
+    var skills = (($("#gsSkills") && $("#gsSkills").value) || "").trim();
+    var loc = (($("#gsLocation") && $("#gsLocation").value) || "").trim();
+    var country = (($("#gsCountry") && $("#gsCountry").value) || "").trim();
+    var type = (($("#gsType") && $("#gsType").value) || "jobs");
+    if (!q && !company && !skills && !loc && !country) {
+      toast("Enter a job title, company, skill, city, or country");
+      return;
+    }
+
+    var status = $("#searchStatus");
+    var box = $("#searchResultsBox");
+    var list = $("#searchResultsList");
+    var links = $("#searchResultLinks");
+    if (status) {
+      status.style.display = "block";
+      status.textContent = "Searching for matches…";
+    }
+    if (box) box.style.display = "block";
+    if (list) list.innerHTML = "<p class='muted'>Loading results…</p>";
+
+    var qLower = q.toLowerCase();
+    var companyLower = company.toLowerCase();
+    var skillsLower = skills.toLowerCase();
+    var locLower = loc.toLowerCase();
+    var countryLower = country.toLowerCase();
+
+    // Build results from curated jobs + generated matches based on inputs
+    var results = [];
+
+    // 1) Match curated / applications
+    CURATED_JOBS.forEach(function (j) {
+      var hay = (j.title + " " + j.company + " " + (j.tags || []).join(" ") + " " + j.loc + " " + j.source).toLowerCase();
+      var score = 0;
+      if (qLower && hay.indexOf(qLower) >= 0) score += 40;
+      if (qLower && j.title.toLowerCase().indexOf(qLower) >= 0) score += 30;
+      if (companyLower && j.company.toLowerCase().indexOf(companyLower) >= 0) score += 35;
+      if (skillsLower) {
+        skillsLower.split(/[, ]+/).forEach(function (sk) {
+          if (sk && hay.indexOf(sk) >= 0) score += 12;
+        });
+      }
+      if (locLower && hay.indexOf(locLower) >= 0) score += 25;
+      if (countryLower && countryLower !== "remote / worldwide" && hay.indexOf(countryLower) >= 0) score += 20;
+      if (countryLower.indexOf("remote") >= 0 && /remote|hybrid/i.test(j.loc)) score += 15;
+      if (score > 0 || (!qLower && !companyLower && (locLower || countryLower))) {
+        if (!qLower && !companyLower && !skillsLower && (locLower || countryLower)) {
+          if (locLower && hay.indexOf(locLower) < 0 && countryLower && hay.indexOf(countryLower) < 0 && countryLower.indexOf("remote") < 0) return;
+        }
+        results.push({
+          title: j.title,
+          company: j.company,
+          loc: j.loc,
+          source: j.source,
+          salary: j.salary,
+          match: j._liveMatch || j.match,
+          url: null,
+          jobId: j.id,
+          score: score || 10
+        });
+      }
+    });
+
+    // 2) Synthetic results tailored to user inputs (always reflect the query)
+    var cities = loc || (country === "India" ? "Gurgaon / Bangalore / Mumbai" : country || "Remote");
+    var titleBase = q || (type === "companies" ? "Careers" : type === "skills" ? "Roles requiring " + (skills || "key skills") : "Talent Acquisition");
+    var cos = company
+      ? [company]
+      : ["Leading Employer", "Growth Tech Co", "Global Enterprise", "Regional Leader", "Hiring Now"];
+    cos.forEach(function (co, i) {
+      var t = titleBase;
+      if (type === "jobs" && q) t = q;
+      if (type === "skills" && skills) t = (q || "Specialist") + " — " + skills;
+      if (type === "companies") t = "Open roles at " + co;
+      results.push({
+        title: t + (i === 0 ? "" : " (" + (i + 1) + ")"),
+        company: co,
+        loc: (loc ? loc + (country ? ", " + country : "") : country || "Remote / Hybrid"),
+        source: i % 3 === 0 ? "LinkedIn" : i % 3 === 1 ? "Indeed" : "Company Site",
+        salary: country === "India" || /gurgaon|bangalore|mumbai|delhi|hyderabad/i.test(loc) ? "₹15L – ₹45L" : "$80K – $160K",
+        match: Math.min(96, 72 + (q ? 10 : 0) + (company ? 8 : 0) + (skills ? 6 : 0)),
+        url: null,
+        jobId: null,
+        score: 50 - i * 5,
+        generated: true
+      });
+    });
+
+    // Sort by score
+    results.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+    results = results.slice(0, 12);
+
+    function renderResultCards(extraLive) {
+      var all = results.slice();
+      if (extraLive && extraLive.length) {
+        extraLive.forEach(function (r) { all.push(r); });
+      }
+      // de-dupe by title+company
+      var seen = {};
+      all = all.filter(function (r) {
+        var k = (r.title + "|" + r.company).toLowerCase();
+        if (seen[k]) return false;
+        seen[k] = true;
+        return true;
+      }).slice(0, 15);
+
+      if (list) {
+        if (!all.length) {
+          list.innerHTML = "<p class='muted'>No matches for these filters. Try broader title or location.</p>";
+        } else {
+          list.innerHTML = all.map(function (r) {
+            var actions = r.jobId
+              ? '<button class="btn-ghost btn-view-jd" data-job-id="' + r.jobId + '">View JD</button>' +
+                '<button class="btn-primary sm btn-apply" data-job-id="' + r.jobId + '">Apply</button>'
+              : (r.url
+                ? '<button class="btn-primary sm btn-open-result" data-url="' + r.url.replace(/"/g, "&quot;") + '">Open</button>'
+                : '<button class="btn-outline sm btn-open-result" data-url="' +
+                  "https://www.google.com/search?q=" + encodeURIComponent(r.title + " " + r.company + " " + r.loc + " job") +
+                  '">Search this role</button>');
+            return (
+              '<div class="job-card">' +
+              '<div class="match-badge high">' + (r.match || "—") + '%<span>Match</span></div>' +
+              '<div class="job-content">' +
+              "<h3 style='font-size:.9rem'>" + r.title + "</h3>" +
+              '<div class="company-row"><span class="company">' + r.company + "</span></div>" +
+              '<div class="job-meta"><span>📍 ' + r.loc + "</span>" +
+              (r.salary ? "<span>💰 " + r.salary + "</span>" : "") +
+              '<span class="source">' + r.source + "</span></div></div>" +
+              '<div class="job-actions">' + actions + "</div></div>"
+            );
+          }).join("");
+        }
+      }
+      if (status) {
+        status.textContent = all.length + " result(s) for " +
+          [q, company, skills, loc, country].filter(Boolean).join(" · ");
+      }
+    }
+
+    renderResultCards([]);
+
+    // External deep links based on exact inputs
+    var googleParts = [];
+    if (q) googleParts.push('"' + q + '"');
+    if (company) googleParts.push(company);
+    if (skills) googleParts.push(skills);
+    if (loc) googleParts.push(loc);
+    if (country && country.indexOf("Remote") < 0) googleParts.push(country);
+    googleParts.push("(job OR jobs OR hiring OR careers)");
+    var googleQ = googleParts.join(" ");
+    var liKeywords = [q, company, skills].filter(Boolean).join(" ") || "jobs";
+    var liLoc = [loc, country].filter(Boolean).join(" ");
+    var indeedQ = [q, company, skills].filter(Boolean).join(" ") || "jobs";
+    var indeedL = loc || country || "";
+
+    if (links) {
+      var naukriSlug = encodeURIComponent((q || "jobs").toLowerCase().replace(/\s+/g, "-")) + "-jobs" +
+        (loc ? "-in-" + encodeURIComponent(loc.toLowerCase().replace(/\s+/g, "-")) : "");
+      links.innerHTML =
+        '<button class="btn-primary sm" id="btnOpenGoogleSearch" data-url="https://www.google.com/search?q=' + encodeURIComponent(googleQ) + '&tbs=qdr:m">Google</button>' +
+        '<button class="btn-outline sm" id="btnOpenLinkedInSearch" data-url="https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(liKeywords) + (liLoc ? "&location=" + encodeURIComponent(liLoc) : "") + '">LinkedIn</button>' +
+        '<button class="btn-outline sm" id="btnOpenIndeedSearch" data-url="https://www.indeed.com/jobs?q=' + encodeURIComponent(indeedQ) + (indeedL ? "&l=" + encodeURIComponent(indeedL) : "") + '">Indeed</button>' +
+        '<button class="btn-outline sm" id="btnOpenNaukriSearch" data-url="https://www.naukri.com/' + naukriSlug + '">Naukri</button>';
+    }
+
+    // Live fetch from Remotive (public API) when query present
+    var searchTerm = [q, company, skills].filter(Boolean).join(" ") || "talent";
+    fetch("https://remotive.com/api/remote-jobs?search=" + encodeURIComponent(searchTerm) + "&limit=10")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var live = [];
+        var jobs = (data && data.jobs) || [];
+        jobs.forEach(function (j) {
+          var hay = ((j.title || "") + " " + (j.company_name || "") + " " + (j.candidate_required_location || "") + " " + (j.tags || []).join(" ")).toLowerCase();
+          if (locLower && hay.indexOf(locLower) < 0 && countryLower && countryLower.indexOf("remote") < 0 && hay.indexOf(countryLower) < 0) {
+            // still include remote jobs if country is remote/worldwide or empty
+            if (country && country.indexOf("Remote") < 0 && loc) return;
+          }
+          if (companyLower && (j.company_name || "").toLowerCase().indexOf(companyLower) < 0) return;
+          live.push({
+            title: j.title,
+            company: j.company_name || "Company",
+            loc: j.candidate_required_location || "Remote",
+            source: "Remotive (live)",
+            salary: j.salary || "—",
+            match: 78,
+            url: j.url,
+            jobId: null,
+            score: 60
+          });
+        });
+        renderResultCards(live);
+        toast(results.length + live.length + " results found");
+      })
+      .catch(function () {
+        renderResultCards([]);
+        toast(results.length + " results (live API unavailable — showing matched + generated)");
+      });
+  }
+
+  function syncProfileUI() {
+    if ($("#profileNameDisplay")) $("#profileNameDisplay").textContent = PROFILE.name;
+    if ($("#profileTitleDisplay")) $("#profileTitleDisplay").textContent = PROFILE.title;
+    if ($("#profileLocationDisplay")) $("#profileLocationDisplay").textContent = PROFILE.location;
+    if ($("#profileAboutText")) $("#profileAboutText").textContent = PROFILE.about;
+    if ($("#mycvSubtitle")) $("#mycvSubtitle").textContent = PROFILE.name + " · " + PROFILE.title;
+    if ($("#profilePhoto") && PROFILE.photoData) $("#profilePhoto").src = PROFILE.photoData;
+    if ($("#resumeFileLabel") && PROFILE.resumeName) $("#resumeFileLabel").textContent = "Resume on file: " + PROFILE.resumeName;
+    var av = $(".avatar");
+    if (av && PROFILE.photoData) av.src = PROFILE.photoData;
+    var un = $(".user-name");
+    if (un) un.textContent = PROFILE.name;
+  }
+
+  function fillSettingsForm() {
+    if ($("#setName")) $("#setName").value = PROFILE.name || "";
+    if ($("#setTitle")) $("#setTitle").value = PROFILE.title || "";
+    if ($("#setEmail")) $("#setEmail").value = PROFILE.email || "";
+    if ($("#setLocation")) $("#setLocation").value = PROFILE.location || "";
+    if ($("#setLinkedIn")) $("#setLinkedIn").value = PROFILE.linkedin || "";
+    if ($("#setRecoveryEmail")) $("#setRecoveryEmail").value = PROFILE.recoveryEmail || PROFILE.email || "";
+  }
+
+  function showRegionCv(region) {
+    var r = REGION_CV[region];
+    if (!r) return;
+    openModal(
+      "<h2>" + r.name + " CV template</h2>" +
+      "<p style='color:#64748b;margin-bottom:.75rem'>" + r.notes + "</p>" +
+      "<p><strong>Recommended structure</strong></p>" +
+      "<p style='font-size:.9rem;line-height:1.5;margin:.5rem 0'>" + r.layout + "</p>" +
+      "<p style='font-size:.85rem;margin-top:.75rem'><strong>Profile applied:</strong> " + PROFILE.name + " · " + PROFILE.title + "</p>" +
+      "<p style='font-size:.85rem'>" + (PROFILE.about || "").slice(0, 180) + "…</p>" +
+      '<div class="modal-actions">' +
+      '<button class="btn-primary btn-download-region" data-region="' + region + '">Download template text</button>' +
+      '<button class="btn-ghost" id="btnCloseModal2">Close</button></div>'
+    );
+  }
+
+  function downloadRegionCv(region) {
+    var r = REGION_CV[region];
+    if (!r) return;
+    var text =
+      PROFILE.name + "\n" + PROFILE.title + "\n" + PROFILE.location + "\n" + PROFILE.email + "\n" + PROFILE.linkedin + "\n\n" +
+      "REGION FORMAT: " + r.name + "\n" + r.notes + "\n\nSTRUCTURE:\n" + r.layout + "\n\nABOUT:\n" + PROFILE.about +
+      "\n\nCURRENT:\nTerraPay · Global Talent Acquisition Leader · Jan 2023 – Present\n";
+    var blob = new Blob([text], { type: "text/plain" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "CV_" + PROFILE.name.replace(/\s+/g, "_") + "_" + region + ".txt";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("Downloaded " + r.name + " CV template");
+  }
+
+  function handlePhotoFile(file) {
+    if (!file || !file.type.match(/^image\//)) {
+      toast("Please select an image file");
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      PROFILE.photoData = e.target.result;
+      saveProfile();
+      syncProfileUI();
+      toast("Photo updated");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleResumeFile(file) {
+    if (!file) return;
+    PROFILE.resumeName = file.name;
+    saveProfile();
+    syncProfileUI();
+    if ($("#setFileLabel")) $("#setFileLabel").textContent = "Resume: " + file.name;
+    if ($("#resumeFileLabel")) $("#resumeFileLabel").textContent = "Resume on file: " + file.name;
+    toast("Resume uploaded: " + file.name);
   }
 
   function openSidebar() {
@@ -3322,6 +3827,23 @@ img, svg, video, canvas, iframe {
       });
       renderNotifs();
     }
+    // realtime job alerts
+    if (JOB_ALERTS.length && Math.random() < 0.25) {
+      var al = JOB_ALERTS[Math.floor(Math.random() * JOB_ALERTS.length)];
+      al.hits = (al.hits || 0) + 1;
+      al.last = "Just now";
+      saveAlerts();
+      if ($("#section-alerts") && $("#section-alerts").classList.contains("active")) renderAlerts();
+      var lbl = $("#alertLiveLabel");
+      if (lbl) lbl.textContent = "Live · " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      NOTIFICATIONS.unshift({
+        id: Date.now() + 1,
+        text: "Alert match: " + al.title + " (" + al.location + ")",
+        time: "Just now",
+        unread: true
+      });
+      renderNotifs();
+    }
   }
   function startRealtime() {
     updateLastUpdated();
@@ -3507,6 +4029,120 @@ img, svg, video, canvas, iframe {
       else toast("Opening…");
       return;
     }
+
+    // Global search modal
+    if (el.id === "btnRunGlobalSearch") { e.preventDefault(); runGlobalSearch(); return; }
+    if (el.id === "btnCloseSearch") { e.preventDefault(); closeGlobalSearch(); return; }
+    if (el.id === "searchModal") { closeGlobalSearch(); return; }
+    if (el.id === "btnOpenGoogleSearch" || el.id === "btnOpenLinkedInSearch" || el.id === "btnOpenIndeedSearch" || el.id === "btnOpenNaukriSearch" || el.classList.contains("btn-open-result")) {
+      e.preventDefault();
+      var url = el.getAttribute("data-url");
+      if (url) window.open(url, "_blank");
+      return;
+    }
+
+    // Alerts
+    if (el.id === "btnCreateAlert") {
+      e.preventDefault();
+      var at = (($("#alertTitle") && $("#alertTitle").value) || "").trim();
+      var aloc = (($("#alertLocation") && $("#alertLocation").value) || "").trim() || "Global";
+      var asal = (($("#alertSalary") && $("#alertSalary").value) || "").trim() || "Any";
+      var am = ($("#alertMatch") && $("#alertMatch").value) || "80";
+      if (!at) { toast("Enter a job title for the alert"); return; }
+      JOB_ALERTS.unshift({ id: Date.now(), title: at, location: aloc, salary: asal, match: Number(am), hits: 0, last: "Just created" });
+      saveAlerts();
+      renderAlerts();
+      toast("Alert created — watching for matches");
+      return;
+    }
+    if (el.classList.contains("btn-del-alert")) {
+      e.preventDefault();
+      var did = Number(el.getAttribute("data-aid"));
+      JOB_ALERTS = JOB_ALERTS.filter(function (a) { return a.id !== did; });
+      saveAlerts();
+      renderAlerts();
+      toast("Alert deleted");
+      return;
+    }
+    if (el.classList.contains("btn-run-alert")) {
+      e.preventDefault();
+      var aid = Number(el.getAttribute("data-aid"));
+      var alr = JOB_ALERTS.find(function (a) { return a.id === aid; });
+      if (alr) {
+        openGlobalSearch(alr.title);
+        if ($("#gsLocation")) $("#gsLocation").value = alr.location;
+        runGlobalSearch();
+      }
+      return;
+    }
+
+    // Regional CV
+    if (el.classList.contains("btn-region-cv")) {
+      e.preventDefault();
+      showRegionCv(el.getAttribute("data-region"));
+      return;
+    }
+    if (el.classList.contains("btn-download-region")) {
+      e.preventDefault();
+      downloadRegionCv(el.getAttribute("data-region"));
+      return;
+    }
+
+    // Profile / settings
+    if (el.id === "btnEditProfile") { e.preventDefault(); showSection("settings"); toast("Update profile in Settings"); return; }
+    if (el.id === "btnSaveProfile") {
+      e.preventDefault();
+      PROFILE.name = ($("#setName") && $("#setName").value.trim()) || PROFILE.name;
+      PROFILE.title = ($("#setTitle") && $("#setTitle").value.trim()) || PROFILE.title;
+      PROFILE.email = ($("#setEmail") && $("#setEmail").value.trim()) || PROFILE.email;
+      PROFILE.location = ($("#setLocation") && $("#setLocation").value.trim()) || PROFILE.location;
+      PROFILE.linkedin = ($("#setLinkedIn") && $("#setLinkedIn").value.trim()) || PROFILE.linkedin;
+      saveProfile();
+      syncProfileUI();
+      toast("Profile saved");
+      return;
+    }
+    if (el.id === "btnChangePass") {
+      e.preventDefault();
+      var cur = ($("#setCurrentPass") && $("#setCurrentPass").value) || "";
+      var np = ($("#setNewPass") && $("#setNewPass").value) || "";
+      var cp = ($("#setConfirmPass") && $("#setConfirmPass").value) || "";
+      if (cur !== AUTH_PASS) { toast("Current password is incorrect"); return; }
+      if (np.length < 6) { toast("New password must be at least 6 characters"); return; }
+      if (np !== cp) { toast("New passwords do not match"); return; }
+      AUTH_PASS = np;
+      try { localStorage.setItem(PASS_KEY, np); } catch (err) {}
+      if ($("#setCurrentPass")) $("#setCurrentPass").value = "";
+      if ($("#setNewPass")) $("#setNewPass").value = "";
+      if ($("#setConfirmPass")) $("#setConfirmPass").value = "";
+      toast("Password updated");
+      return;
+    }
+    if (el.id === "btnSaveRecovery") {
+      e.preventDefault();
+      var re = ($("#setRecoveryEmail") && $("#setRecoveryEmail").value.trim()) || "";
+      if (!re || re.indexOf("@") < 0) { toast("Enter a valid recovery email"); return; }
+      PROFILE.recoveryEmail = re;
+      saveProfile();
+      toast("Recovery email saved");
+      return;
+    }
+    if (el.id === "btnTestRecovery") {
+      e.preventDefault();
+      var rem = PROFILE.recoveryEmail || PROFILE.email;
+      toast("Recovery link would be sent to " + rem + " (demo)");
+      return;
+    }
+    if (el.id === "btnSavePrefs") {
+      e.preventDefault();
+      toast("Preferences saved");
+      return;
+    }
+    if (el.id === "btnCoverLetter") {
+      e.preventDefault();
+      openModal("<h2>Cover letter</h2><p class='muted'>Draft based on your profile for TA leadership roles.</p><textarea rows='8' style='width:100%;margin-top:.75rem;padding:.75rem;border:1px solid #e2e8f0;border-radius:8px;font-family:inherit'>Dear Hiring Manager,\n\nI am writing to express interest in the Talent Acquisition leadership opportunity. With 20+ years of global TA experience across Europe, Americas, Middle East, Africa and APAC — most recently as Global TA Leader at TerraPay — I specialise in building scalable, AI-enabled hiring systems and leadership pipelines.\n\nI would welcome a conversation about how I can support your talent agenda.\n\nSincerely,\n" + PROFILE.name + "</textarea><div class='modal-actions'><button class='btn-primary' id='btnCloseModal2'>Close</button></div>");
+      return;
+    }
   }
 
   function init() {
@@ -3534,16 +4170,58 @@ img, svg, video, canvas, iframe {
     document.addEventListener("keydown", function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        var gs = $("#globalSearch");
-        if (gs) gs.focus();
+        openGlobalSearch(($("#globalSearch") && $("#globalSearch").value) || "");
       }
       if (e.key === "Escape") {
         closeChat();
         closeModal();
+        closeGlobalSearch();
         var np = $("#notifPanel");
         if (np) np.classList.remove("open");
       }
     });
+
+    var gs = $("#globalSearch");
+    if (gs) {
+      gs.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          openGlobalSearch(gs.value);
+          if (gs.value.trim()) {
+            if ($("#gsQuery")) $("#gsQuery").value = gs.value.trim();
+            runGlobalSearch();
+          }
+        }
+      });
+      gs.addEventListener("click", function () {
+        openGlobalSearch(gs.value || "");
+      });
+    }
+    var searchBar = $(".search-bar");
+    if (searchBar) {
+      searchBar.addEventListener("click", function (e) {
+        if (e.target.closest("input") || e.target.closest("kbd")) return;
+        openGlobalSearch((gs && gs.value) || "");
+      });
+    }
+    var gsQ = $("#gsQuery");
+    if (gsQ) {
+      gsQ.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); runGlobalSearch(); }
+      });
+    }
+
+    function wireFile(id, handler) {
+      var inp = document.getElementById(id);
+      if (!inp) return;
+      inp.addEventListener("change", function () {
+        if (inp.files && inp.files[0]) handler(inp.files[0]);
+      });
+    }
+    wireFile("photoUpload", handlePhotoFile);
+    wireFile("setPhotoUpload", handlePhotoFile);
+    wireFile("resumeUpload", handleResumeFile);
+    wireFile("setResumeUpload", handleResumeFile);
 
     var sf = $("#sourceFilter");
     if (sf) sf.addEventListener("input", function (e) {
@@ -3558,6 +4236,7 @@ img, svg, video, canvas, iframe {
     renderApplications();
     renderInterviews();
     renderOffers();
+    renderAlerts();
     renderNotifs();
     renderSourceBars();
     renderPipeline();
@@ -3565,6 +4244,8 @@ img, svg, video, canvas, iframe {
     wireAnalyticsDropdown();
     applyAnalyticsPeriod("monthly");
     updateAnalyticsKpis("monthly");
+    syncProfileUI();
+    fillSettingsForm();
     // Charts need a short delay so canvas is in DOM / section may be hidden
     setTimeout(function () { initCharts(); }, 100);
 
