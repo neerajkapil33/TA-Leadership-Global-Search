@@ -1,0 +1,14 @@
+{
+  "name": "TA Command Center",
+  "short_name": "TA Command Center",
+  "description": "AI Job Search & Intelligence for Talent Acquisition Leadership",
+  "start_url": "./mobile.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
